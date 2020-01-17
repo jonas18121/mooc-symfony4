@@ -5,15 +5,25 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Twig\Environment;
+
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class AdvertController extends AbstractController
 {
     
     /**
-     * @Route("/", name="OC_advert_index")
+     * @Route("/{page}", name="OC_advert_index",
+     *  requirements={
+     *      "page" = "[0-9]+"
+     *  },
+     *  defaults= {
+     *      "page" = 1
+     *  }
+     * )
      */
-    public function index(Environment $twig )
+    public function index(Environment $twig)
     {
         /*
         /**
@@ -40,8 +50,43 @@ class AdvertController extends AbstractController
      *      "id" = "[0-9]{1,}"
      * })
      */
-    public function view($id)
+    public function view($id, Request $request)
     {
-        return new Response("Affichage de l'annonce d'id : {$id} ");
+        $tag = $request->query->get('tag'); 
+        $ok = $request->query->get('ok'); 
+        
+        //return new Response("Affichage de l'annonce d'id : '{$id}' , avec le tag : {$tag} {$ok} ");
+        return $this->render('Advert/view.html.twig', [
+            'id'  => $id, 
+            'tag' => $tag
+        ]);
+    }
+
+    /**
+     * @Route("/advert/add", name="OC_advert_add")
+     */
+    public function add()
+    {
+
+    }
+
+    /**
+     * @Route("/advert/edit/{id}", requirements={
+     *      "id" = "[0-9]+"
+     * })
+     */
+    public function edit($id)
+    {
+
+    }
+
+    /**
+     * @Route("/advert/delete/{id}", requirements={
+     *      "id" = "[0-9]+"
+     * })
+     */
+    public function delete($id)
+    {
+
     }
 }

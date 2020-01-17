@@ -1,0 +1,15 @@
+{% block title %}Accueil {% endblock %}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <section>
+        <h2>Bienvenue a l'accueil</h2>
+
+        <div>
+            <p>Bonjour {{ name | capitalize }}</p>
+        </div>
+        <a href="{{ path('OC_advert_view', {'id' : 5 })}}">article 5</a>
+    </section>
+
+{% endblock body %}

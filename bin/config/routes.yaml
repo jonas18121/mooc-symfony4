@@ -1,0 +1,22 @@
+# c'est le routeur
+
+#index:                                                    //nom de la route, il doit être unique
+#    path: /                                               // l'URL 
+#    controller: App\Controller\DefaultController::index   // l'action = le controller qui appelle une de ses méthodes
+
+# 1 faire : composer require symfony/maker-bundle --dev
+# 2 faire : composer require doctrine/annotations
+# 3 faire : php bin/console make:controller
+# 4 faire : composer require twig
+
+# OC_advert_index:
+#    path:       /
+#    controller: App\Controller\AdvertController::index
+
+# OC_advert_view:
+#    path:       /advert/view/{id}
+#    controller: App\Controller\AdvertController::view
+
+# OC_advert_add: 
+#    path:       /advert/add
+#    controller: App\Controller\AdvertController::add

@@ -1,0 +1,14 @@
+{% block title %} Annonce {{ id }} {% endblock %}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <section>
+        <h2>Annonce n* {{ id }}</h2>
+
+        <div>
+            <p> Tag éventuel : {{ tag }}</p>
+        </div>
+    </section>
+
+{% endblock body %}

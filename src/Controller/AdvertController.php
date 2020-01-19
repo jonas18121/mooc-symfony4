@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Twig\Environment;
 
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class AdvertController extends AbstractController
 {
@@ -23,25 +23,17 @@ class AdvertController extends AbstractController
      *  }
      * )
      */
-    public function index(Environment $twig)
+    public function index($page)
     {
-        /*
-        /**
-        * @Route("/default", name="default")
-        *//*
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/DefaultController.php',
-        ]);
-        */
+        if($page < 1)
+        {
+            throw $this->createNotFoundException("page '{$page}' inexistante"); // on lance une erreur 404
+        }
+        
 
-        /*$content = " Bienvenue sur mon site";
-        return new Response($content);*/
-
-        $content = $twig->render('advert/index.html.twig', [
+        return $this->render('advert/index.html.twig', [
             'name' => 'zoubert'
         ]);
-        return new Response($content);
     }
 
     //requirements = pour ajouter des contraintes
@@ -50,9 +42,9 @@ class AdvertController extends AbstractController
      *      "id" = "[0-9]{1,}"
      * })
      */
-    public function view($id, Request $request)
+    public function view($id, Request $request /*, SessionInterface $session*/)
     {
-        $tag = $request->query->get('tag'); 
+        $tag = $request->query->get('tag'); //pour une URL /advert/view/{id}?tag=une_valeur
         $ok = $request->query->get('ok'); 
         
         //return new Response("Affichage de l'annonce d'id : '{$id}' , avec le tag : {$tag} {$ok} ");
@@ -60,14 +52,33 @@ class AdvertController extends AbstractController
             'id'  => $id, 
             'tag' => $tag
         ]);
+
+        /*return $this->redirectToRoute("OC_advert_index");*/
+
+        /*$userId = $session->get('userId');
+        var_dump($userId);
+        $session->set('userId',91);
+        return new Response("okokokokokok");*/
+
     }
 
     /**
      * @Route("/advert/add", name="OC_advert_add")
      */
-    public function add()
+    public function add(Request $request)
     {
+        if($request->isMethod('POST')) // si la requête est en POST
+        {
+            /* ici on traite le formulaire */ 
 
+            $this->addFlash('notice', 'Annonce bien enregistrée');// on fait le petit message flash
+
+            //et on fait une redirection
+            return $this->redirectToRoute('OC_advert_view', ['id' => 5]);
+        }
+
+        //sinon on affiche le formulaire
+        return $this->render('advert/add.html.twig');
     }
 
     /**
@@ -75,9 +86,20 @@ class AdvertController extends AbstractController
      *      "id" = "[0-9]+"
      * })
      */
-    public function edit($id)
+    public function edit($id, Request $request)
     {
+        /* ici récupération de $id */ 
 
+        if($request->isMethod('POST')) // si la requête est en POST
+        {
+            $this->addFlash('notice', 'Annonce bien modifiée');// on fait le petit message flash
+
+            //et on fait une redirection
+            return $this->redirectToRoute('OC_advert_view', ['id' => 5]);
+        }
+
+        //sinon on affiche le formulaire
+        return $this->render('advert/edit.html.twig');
     }
 
     /**
@@ -87,6 +109,6 @@ class AdvertController extends AbstractController
      */
     public function delete($id)
     {
-
+        return $this->render('advert/delete.html.twig');
     }
 }

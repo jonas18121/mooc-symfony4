@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+{% block title %} {{ parent() }} - Modifier une annonce {% endblock %}
+
+{% block body %}
+
+    <section>
+        <h2> Modifier une annonces </h2>
+
+        {# inclure le template _form  #}
+        {{ include("advert/_form.html.twig") }}
+
+        <p>Vous modifier cette annonce</p>
+
+        <p>
+            <a href="{{ path('OC_advert_view', {'id' : advert.id }) }}" class="btn btn-default">
+                <i class="glyphicon glyphicon-chevron-left"></i>
+                Retour à l'annonce
+            </a>
+        </p>
+    </section>
+
+{% endblock body %}

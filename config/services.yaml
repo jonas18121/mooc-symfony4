@@ -3,8 +3,12 @@
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
-parameters:
 
+# Pour définir un service de variables
+parameters:
+    # mon_parametre: ma_valeur
+
+    # Pour définir un service de classes
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -25,3 +29,6 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    OC_platforme.antispam:               #nom du service qu'on va utiliser pour l'appeller         
+        class: App\AntiSpam\OCAntiSpame      #defini le namespace complet de la classe du service

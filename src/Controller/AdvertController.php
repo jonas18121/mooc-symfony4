@@ -7,8 +7,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Twig\Environment;
+use App\AntiSpam\OCAntiSpame;//je vais l'utiliser ce service en fesant des injection de dépendance
 
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
 
 class AdvertController extends AbstractController
 {
@@ -98,18 +100,26 @@ class AdvertController extends AbstractController
      *      "id" = "[0-9]{1,}"
      * })
      */
-    public function view($id, Request $request /*, SessionInterface $session*/)
+    public function view($id, Request $request , OCAntiSpame $antiSpam /*, SessionInterface $session*/)
     {
         $tag = $request->query->get('tag'); //pour une URL /advert/view/{id}?tag=une_valeur
         $ok = $request->query->get('ok'); 
 
         $advert = [
-                'id' => 2, 
-                'title' => 'Recherche développeur Symfony',
-                'author' => 'Alexandre',
-                'content' => 'Nous recherchons un developpeur Symfony sur Nantes',
-                'date' => new \Datetime()
-            ];
+            'id' => 2, 
+            'title' => 'Recherche développeur Symfony',
+            'author' => 'Alexandre',
+            'content' => 'Nous recherchons un developpeur Symfony sur Nantes',
+            'date' => new \Datetime()
+        ];
+        //var_dump('ok AdvertControler');die;
+
+        //$antiSpam = $this->get('OC_platforme.antispam');//on récupère le service //Obselète
+
+        //$advert = '...';
+        if($antiSpam->isSpam($advert)){
+            throw new \Exception('Votre messages a été détècté comme spam');
+        }
         
         //return new Response("Affichage de l'annonce d'id : '{$id}' , avec le tag : {$tag} {$ok} ");
         return $this->render('advert/view.html.twig', [
@@ -139,6 +149,13 @@ class AdvertController extends AbstractController
             'content' => 'Nous recherchons un developpeur Symfony sur Nantes',
             'date' => new \Datetime()
         ];
+
+        // $antiSpam = $this->container->get('OC_platform.antispam');//on récupère le service
+
+        // $advert = '...';
+        // if($antiSpam->isSpam($advert)){
+        //     throw new \Exception('Votre messages a été détècté comme spam');
+        // }
 
         if($request->isMethod('POST')) // si la requête est en POST
         {

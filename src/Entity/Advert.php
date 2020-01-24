@@ -36,6 +36,13 @@ class Advert
      */
     private $date;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $published = true ;
+
+    
+
     public function getId(): ?int
     {
         return $this->id;
@@ -85,6 +92,18 @@ class Advert
     public function setDate(\DateTimeInterface $date): self
     {
         $this->date = $date;
+
+        return $this;
+    }
+
+    public function getPublished(): ?bool
+    {
+        return $this->published;
+    }
+
+    public function setPublished(bool $published): self
+    {
+        $this->published = $published;
 
         return $this;
     }

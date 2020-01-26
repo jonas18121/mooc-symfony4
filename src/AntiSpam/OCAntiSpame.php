@@ -15,12 +15,11 @@ class OCAntiSpame
      */
     public function isSpam($text)
     {
-        //var_dump('ok pour isSpam');die;
+        //var_dump(strlen($text->getContent()));die;
         /*$text = (strlen($text) < 50) ? true : false;
         return $text;*/
 
-        return !is_array($text);
+        return (strlen($text->getContent()) < 50) ? true : false;
+        //return !is_object($text);
     }
 }
-//dump(new OCAntiSpame);//die;
-//var_dump('ok pour ');//die;

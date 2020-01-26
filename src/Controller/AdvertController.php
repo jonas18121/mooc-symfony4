@@ -11,6 +11,10 @@ use App\AntiSpam\OCAntiSpame;//je vais l'utiliser ce service en fesant des injec
 
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
+use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Advert;
+use App\Repository\AdvertRepository;
+
 
 class AdvertController extends AbstractController
 {
@@ -100,7 +104,7 @@ class AdvertController extends AbstractController
      *      "id" = "[0-9]{1,}"
      * })
      */
-    public function view($id, Request $request , OCAntiSpame $antiSpam /*, SessionInterface $session*/)
+    public function view($id, Request $request , OCAntiSpame $antiSpam , AdvertRepository $repo)
     {
         $tag = $request->query->get('tag'); //pour une URL /advert/view/{id}?tag=une_valeur
         $ok = $request->query->get('ok'); 
@@ -112,11 +116,11 @@ class AdvertController extends AbstractController
             'content' => 'Nous recherchons un developpeur Symfony sur Nantes',
             'date' => new \Datetime()
         ];
-        //var_dump('ok AdvertControler');die;
 
-        //$antiSpam = $this->get('OC_platforme.antispam');//on récupère le service //Obselète
+        $advert = $repo->find($id);
+        //var_dump($advert);die;
 
-        //$advert = '...';
+        
         if($antiSpam->isSpam($advert)){
             throw new \Exception('Votre messages a été détècté comme spam');
         }
@@ -140,7 +144,7 @@ class AdvertController extends AbstractController
     /**
      * @Route("/advert/add", name="OC_advert_add")
      */
-    public function add(Request $request)
+    public function add(Request $request, EntityManagerInterface $manager)
     {
         $advert = [
             'id' => 2, 
@@ -150,12 +154,15 @@ class AdvertController extends AbstractController
             'date' => new \Datetime()
         ];
 
-        // $antiSpam = $this->container->get('OC_platform.antispam');//on récupère le service
+        $advert = new Advert();
+        $advert->setTitle('Formation developpeur fullstack avec une POEC')
+               ->setAuthor('mougli')
+               ->setContent('Nous recherchons un developpeur pour un dispositif POEC sur Nantes')
+               ->setDate(new \Datetime('now'));
 
-        // $advert = '...';
-        // if($antiSpam->isSpam($advert)){
-        //     throw new \Exception('Votre messages a été détècté comme spam');
-        // }
+        $manager->persist($advert);
+        $manager->flush();
+        
 
         if($request->isMethod('POST')) // si la requête est en POST
         {

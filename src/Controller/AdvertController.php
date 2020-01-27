@@ -15,6 +15,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Advert;
 use App\Repository\AdvertRepository;
 
+use App\Entity\Image;
+use App\Entity\Application;
+use App\Repository\ApplicationRepository;
 
 class AdvertController extends AbstractController
 {
@@ -104,19 +107,20 @@ class AdvertController extends AbstractController
      *      "id" = "[0-9]{1,}"
      * })
      */
-    public function view($id, Request $request , OCAntiSpame $antiSpam , AdvertRepository $repo)
+    public function view($id, Request $request , OCAntiSpame $antiSpam , AdvertRepository $repo, ApplicationRepository $repoApplication)
     {
         $tag = $request->query->get('tag'); //pour une URL /advert/view/{id}?tag=une_valeur
         $ok = $request->query->get('ok'); 
 
-        $advert = [
+        /*$advert = [
             'id' => 2, 
             'title' => 'Recherche développeur Symfony',
             'author' => 'Alexandre',
             'content' => 'Nous recherchons un developpeur Symfony sur Nantes',
             'date' => new \Datetime()
-        ];
+        ];*/
 
+        //on récupère l'id de l'annonce
         $advert = $repo->find($id);
         //var_dump($advert);die;
 
@@ -124,12 +128,19 @@ class AdvertController extends AbstractController
         if($antiSpam->isSpam($advert)){
             throw new \Exception('Votre messages a été détècté comme spam');
         }
+
+
+        //on recupère la liste des candidature de cette annonce
+        $listApplications = $repoApplication->findBy(['advert' => $advert]);
+
+
         
         //return new Response("Affichage de l'annonce d'id : '{$id}' , avec le tag : {$tag} {$ok} ");
         return $this->render('advert/view.html.twig', [
             'id'  => $id, 
             'tag' => $tag,
-            'advert' => $advert
+            'advert' => $advert,
+            'listApplications' => $listApplications
         ]);
 
         /*return $this->redirectToRoute("OC_advert_index");*/
@@ -146,21 +157,43 @@ class AdvertController extends AbstractController
      */
     public function add(Request $request, EntityManagerInterface $manager)
     {
-        $advert = [
+        /*$advert = [
             'id' => 2, 
             'title' => 'Recherche développeur Symfony',
             'author' => 'Alexandre',
             'content' => 'Nous recherchons un developpeur Symfony sur Nantes',
             'date' => new \Datetime()
-        ];
+        ];*/
 
         $advert = new Advert();
-        $advert->setTitle('Formation developpeur fullstack avec une POEC')
+        $advert->setTitle('Formation en apprentissage en tant que developpeur fullstack')
                ->setAuthor('mougli')
-               ->setContent('Nous recherchons un developpeur pour un dispositif POEC sur Nantes')
+               ->setContent('Nous proposons un contrat d\'apprentissage en tant que developpeur sur Nantes')
                ->setDate(new \Datetime('now'));
 
+        $image = new Image();
+        $image->setUrl('bm.jpg')
+              ->setAlt('my good job');
+              
+        $advert->setImage($image);    
+        
+        $application1 = new Application();
+        $application1->setAuthor('Marine')
+                     ->setContent('J\'ai toutes les qualité requises.');
+
+        $application2 = new Application();
+        $application2->setAuthor('Jean')
+                     ->setContent('Je suis le candidat qu\'il vous faut.');
+
+        
+        $application1->setAdvert($advert);
+        $application2->setAdvert($advert);
+
         $manager->persist($advert);
+        $manager->persist($application1);
+        $manager->persist($application2);
+
+
         $manager->flush();
         
 

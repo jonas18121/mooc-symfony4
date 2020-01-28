@@ -4,6 +4,18 @@
 {% block body %}
 
     <section>
+        {# categorie de l'annonce #}
+        {% if not advert.categories.empty %}
+            <p>
+                Cette annonce est paru dans les categorie suivantes : 
+                {% for category in advert.categories %}
+                    {{ category.name}}
+                    {% if not loop.last %} , {% endif %}
+                {% endfor %}    
+            </p>
+        {% endif %}
+
+        {# annonce #}
         <h2>{{ advert.title }}</h2>
         <i>Par {{ advert.author }}, le {{ advert.date|date('d/m/Y') }}</i>
 
@@ -12,6 +24,7 @@
             <p>{{ advert.content }}</p>
         </div>
 
+        {# image de l'annonce #}
         {% if advert.image is not null %}
             <img src="{{ advert.image.url }}" alt="{{ advert.image.alt }}">
         {% endif %}    
@@ -35,15 +48,22 @@
     </section>
 
     <section>
-        <h2>Liste de candidatures</h2>
+        {# liste de candidature #}
+        {% if listApplications is not empty %}
 
-        {% if listApplications is not null %}
+            {% if listApplications|length <= 1 %}
+                <h2>Candidature</h2>
+            {% else %}
+                <h2>Liste de candidatures</h2>
+            {% endif %}    
+
             {% for listApplication in listApplications %}
                 <div class="well">
                     <h4>{{ listApplication.author }} a candidater le {{ listApplication.date | date }} </h4>
                     <p>{{ listApplication.content }}</p> 
                 </div>                   
             {% endfor %}
+
         {% endif %}  
         
     </section>

@@ -19,6 +19,9 @@ use App\Entity\Image;
 use App\Entity\Application;
 use App\Repository\ApplicationRepository;
 
+use App\Entity\Category;
+use App\Repository\CategoryRepository;
+
 class AdvertController extends AbstractController
 {
      //affiché les dernières annonces
@@ -218,16 +221,36 @@ class AdvertController extends AbstractController
      *      "id" = "[0-9]+"
      * })
      */
-    public function edit($id, Request $request)
+    public function edit($id, Request $request, AdvertRepository $repoArticle, CategoryRepository $repoCategory, EntityManagerInterface $manager)
     {
         /* ici récupération de $id */ 
-        $advert = [
+        /*$advert = [
             'id' => 2, 
             'title' => 'Recherche développeur Symfony',
             'author' => 'Alexandre',
             'content' => 'Nous recherchons un developpeur Symfony sur Nantes',
             'date' => new \Datetime()
-        ];
+        ];*/
+
+        //on récupère l'id de l'annonce
+        $advert = $repoArticle->find($id);
+
+        if($advert === null){
+            throw new \Exception("L'annonce qui à cette id : {$id} n'existe pas.");
+        }
+
+        //on récupère toutes les category
+        $listCategories = $repoCategory->findAll();
+
+        foreach($listCategories as $category)
+        {
+            $advert->addCategory($category);
+        }
+
+        $manager->flush();
+
+
+
 
         if($request->isMethod('POST')) // si la requête est en POST
         {
@@ -248,8 +271,23 @@ class AdvertController extends AbstractController
      *      "id" = "[0-9]+"
      * })
      */
-    public function delete($id)
+    public function delete($id, AdvertRepository $repoArticle, CategoryRepository $repoCategory, EntityManagerInterface $manager)
     {
+        //on récupère l'id de l'annonce
+        $advert = $repoArticle->find($id);
+
+        if($advert === null){
+            throw new \Exception("L'annonce qui à cette id : {$id} n'existe pas.");
+        }
+
+        //on supprime toutes les category
+        foreach($advert->getCategories() as $category)
+        {
+            $advert->removeCategory($category);
+        }
+
+        $manager->flush();
+
         return $this->render('advert/delete.html.twig');
     }
 }

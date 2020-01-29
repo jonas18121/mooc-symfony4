@@ -4,30 +4,52 @@
 {% block body %}
 
     <section>
-        {# categorie de l'annonce #}
-        {% if not advert.categories.empty %}
-            <p>
-                Cette annonce est paru dans les categorie suivantes : 
-                {% for category in advert.categories %}
-                    {{ category.name}}
-                    {% if not loop.last %} , {% endif %}
-                {% endfor %}    
-            </p>
-        {% endif %}
+        
 
-        {# annonce #}
-        <h2>{{ advert.title }}</h2>
-        <i>Par {{ advert.author }}, le {{ advert.date|date('d/m/Y') }}</i>
+        <div>
+            {# annonce #}
+            <h2>{{ advert.title }}</h2>
+            <i>Par {{ advert.author }}, le {{ advert.date|date('d/m/Y') }}</i>
 
-        <div class="well">
-            <p> Tag éventuel : {{ tag }}</p>
-            <p>{{ advert.content }}</p>
-        </div>
+            <div class="well">
+                <p> Tag éventuel : {{ tag }}</p>
+                <p>{{ advert.content }}</p>
 
-        {# image de l'annonce #}
-        {% if advert.image is not null %}
-            <img src="{{ advert.image.url }}" alt="{{ advert.image.alt }}">
-        {% endif %}    
+                <div>
+                    {# categorie de l'annonce #}
+                    {% if not advert.categories.empty %}
+                        <p>
+                            Cette annonce est paru dans les categorie suivantes : 
+                            {% for category in advert.categories %}
+                                {{ category.name}}
+                                {% if not loop.last %} , {% endif %} {# pour ne pas mettre une virgule après le dernier mot#}
+                            {% endfor %}    
+                        </p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    {# liste de compétences #}
+                    {% if listAdvertSkills|length > 0 %}
+                        <div>
+                            <p> Cette annonce requiert les compétences suivantes : </p>
+
+                            <ul>
+                                {% for advertSkill in listAdvertSkills %}
+                                    <li>{{ advertSkill.skill.name }} </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            
+            {# image de l'annonce #}
+            {% if advert.image is not null %}
+                <img src="{{ advert.image.url }}" alt="{{ advert.image.alt }}">
+            {% endif %}
+        </div>    
 
         <p>
             <a href="{{ path('OC_advert_index') }}" class="btn btn-default">
@@ -65,7 +87,6 @@
             {% endfor %}
 
         {% endif %}  
-        
     </section>
 
 {% endblock body %}

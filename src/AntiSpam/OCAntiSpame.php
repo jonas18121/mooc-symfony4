@@ -1,5 +1,7 @@
 <?php
 
+/* c'est un service */
+
 namespace App\AntiSpam;
 //var_dump('ok 111');//die;
 

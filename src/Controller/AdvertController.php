@@ -22,6 +22,10 @@ use App\Repository\ApplicationRepository;
 use App\Entity\Category;
 use App\Repository\CategoryRepository;
 
+use App\Entity\AdvertSkill;
+use App\Repository\AdvertSkillRepository;
+use App\Repository\SkillRepository;
+
 class AdvertController extends AbstractController
 {
      //affiché les dernières annonces
@@ -110,31 +114,24 @@ class AdvertController extends AbstractController
      *      "id" = "[0-9]{1,}"
      * })
      */
-    public function view($id, Request $request , OCAntiSpame $antiSpam , AdvertRepository $repo, ApplicationRepository $repoApplication)
+    public function view($id, Request $request , OCAntiSpame $antiSpam, AdvertSkillRepository $repoAdvertSkill, AdvertRepository $repo, ApplicationRepository $repoApplication)
     {
         $tag = $request->query->get('tag'); //pour une URL /advert/view/{id}?tag=une_valeur
         $ok = $request->query->get('ok'); 
 
-        /*$advert = [
-            'id' => 2, 
-            'title' => 'Recherche développeur Symfony',
-            'author' => 'Alexandre',
-            'content' => 'Nous recherchons un developpeur Symfony sur Nantes',
-            'date' => new \Datetime()
-        ];*/
-
         //on récupère l'id de l'annonce
         $advert = $repo->find($id);
-        //var_dump($advert);die;
 
-        
         if($antiSpam->isSpam($advert)){
             throw new \Exception('Votre messages a été détècté comme spam');
         }
 
 
-        //on recupère la liste des candidature de cette annonce
+        //on recupère la liste des candidature lier à cette annonce
         $listApplications = $repoApplication->findBy(['advert' => $advert]);
+
+        // on récupère la liste de compétences lier à cette annonce
+        $listAdvertSkills = $repoAdvertSkill->findBy(['advert' => $advert]);
 
 
         
@@ -143,7 +140,8 @@ class AdvertController extends AbstractController
             'id'  => $id, 
             'tag' => $tag,
             'advert' => $advert,
-            'listApplications' => $listApplications
+            'listApplications' => $listApplications,
+            'listAdvertSkills' => $listAdvertSkills
         ]);
 
         /*return $this->redirectToRoute("OC_advert_index");*/
@@ -158,21 +156,14 @@ class AdvertController extends AbstractController
     /**
      * @Route("/advert/add", name="OC_advert_add")
      */
-    public function add(Request $request, EntityManagerInterface $manager)
+    public function add(Request $request, EntityManagerInterface $manager, SkillRepository $repoSkill)
     {
-        /*$advert = [
-            'id' => 2, 
-            'title' => 'Recherche développeur Symfony',
-            'author' => 'Alexandre',
-            'content' => 'Nous recherchons un developpeur Symfony sur Nantes',
-            'date' => new \Datetime()
-        ];*/
 
         $advert = new Advert();
         $advert->setTitle('Formation en apprentissage en tant que developpeur fullstack')
                ->setAuthor('mougli')
                ->setContent('Nous proposons un contrat d\'apprentissage en tant que developpeur sur Nantes')
-               ->setDate(new \Datetime('now'));
+               ->setDate(new \Datetime());
 
         $image = new Image();
         $image->setUrl('bm.jpg')
@@ -191,6 +182,22 @@ class AdvertController extends AbstractController
         
         $application1->setAdvert($advert);
         $application2->setAdvert($advert);
+
+
+
+        $listSkill = $repoSkill->findAll();
+
+        foreach($listSkill as $skill)
+        {
+            $advertSkill = new AdvertSkill();
+
+            $advertSkill->setAdvert($advert)
+                        ->setSkill($skill)
+                        ->setLevel('Expert');
+
+            $manager->persist($advertSkill);
+        }
+
 
         $manager->persist($advert);
         $manager->persist($application1);

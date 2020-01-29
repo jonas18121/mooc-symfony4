@@ -43,26 +43,32 @@ class Advert
      */
     private $published = true ;
 
-    /**
+    /**                                                 Advert est propriétaire
      * @ORM\OneToOne(targetEntity="App\Entity\Image", inversedBy="advert", cascade={"persist", "remove"})
      */
     private $image;
 
-    /**
+    /**                                                     Advert est pas propriétaire
      * @ORM\OneToMany(targetEntity="App\Entity\Application", mappedBy="advert", orphanRemoval=true)
      */
     private $applications;
 
-    /**
+    /**                                                     Advert est propriétaire
      * @ORM\ManyToMany(targetEntity="App\Entity\Category", inversedBy="adverts")
      */
     private $categories;
+
+    /**                                                     Advert est pas propriétaire
+     * @ORM\OneToMany(targetEntity="App\Entity\AdvertSkill", mappedBy="advert", orphanRemoval=true)
+     */
+    private $advertSkills;
 
     // les listes d'objet sont des ArrayCollection()
     public function __construct()
     {
         $this->applications = new ArrayCollection();
         $this->categories = new ArrayCollection();
+        $this->advertSkills = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -154,7 +160,7 @@ class Advert
     {
         if (!$this->applications->contains($application)) {
             $this->applications[] = $application;
-            $application->setAdvert($this);
+            $application->setAdvert($this);//on lie l'annonce à la candidature
         }
 
         return $this;
@@ -194,6 +200,37 @@ class Advert
     {
         if ($this->categories->contains($category)) {
             $this->categories->removeElement($category);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|AdvertSkill[]
+     */
+    public function getAdvertSkills(): Collection
+    {
+        return $this->advertSkills;
+    }
+
+    public function addAdvertSkill(AdvertSkill $advertSkill): self
+    {
+        if (!$this->advertSkills->contains($advertSkill)) {
+            $this->advertSkills[] = $advertSkill;
+            $advertSkill->setAdvert($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAdvertSkill(AdvertSkill $advertSkill): self
+    {
+        if ($this->advertSkills->contains($advertSkill)) {
+            $this->advertSkills->removeElement($advertSkill);
+            // set the owning side to null (unless already changed)
+            if ($advertSkill->getAdvert() === $this) {
+                $advertSkill->setAdvert(null);
+            }
         }
 
         return $this;

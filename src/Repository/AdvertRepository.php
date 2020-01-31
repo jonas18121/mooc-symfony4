@@ -19,6 +19,29 @@ class AdvertRepository extends ServiceEntityRepository
         parent::__construct($registry, Advert::class);
     }
 
+    public function getAdvertWithApplication()
+    {
+        $qb = $this->createQueryBuilder('a') // on crée une select('a')
+                   ->leftJoin('a.applications', 'app') // on crée une jointure avec leftJoin() ou innerJoin()
+                   ->addSelect('app'); // on selectionne l'entité jointe grace a son alias 'app'
+
+        return $qb->getQuery()
+                  ->getResult();
+    }
+
+    public function getAdvertWithCategories(array $categoryName)
+    {
+        
+    }
+
+    /*
+    public function whereCurrentYear(QueryBuilder $queryBuilder)
+    {
+        $queryBuilder->andWhere('a.date BETWEEN :start AND :end')
+                     ->setParameter('start', new \DateTime(date('Y').'-01-01'))// date du 1er janvier de cette année
+                     ->setParameter('end', new \DateTime(date('Y').'-12-31'));// date du 31 Décembre de cette année
+    }*/
+
     // /**
     //  * @return Advert[] Returns an array of Advert objects
     //  */

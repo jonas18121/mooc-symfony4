@@ -29,18 +29,24 @@ use App\Repository\SkillRepository;
 class AdvertController extends AbstractController
 {
      //affiché les dernières annonces
-    public function menuAction($limit)
+    public function menuAction($limit, AdvertRepository $repo, ApplicationRepository $ApplicationRepo)
     {
-        $listAdverts = [
+        /*$listAdverts = [
             ['id' => 2, 'title' => 'Recherche développeur Symfony'],
             ['id' => 3, 'title' => 'mission développeur Angular/Symfony'],
             ['id' => 4, 'title' => 'stage pour développeur php'],
             ['id' => 5, 'title' => 'stage pour développeur python']
-        ];
+        ];*/
+
+        // récupère toutes les annonces qui correspondent à une liste de catégories
+        $listAdvertsByCategory = $repo->getAdvertWithCategories(['Développement web', 'Intégration']);
+
+        // récupère les X dernières candidatures avec leurs annonces associer
+        $limits = $ApplicationRepo->getApplicationsWithAdvert(1);
 
         return $this->render('advert/_menu.html.twig',[
-            'listAdverts' => $listAdverts,
-            'limit' => $limit
+            'listAdverts' => $listAdvertsByCategory,
+            'limits' => $limits
         ]);
     }
 
@@ -133,6 +139,9 @@ class AdvertController extends AbstractController
         // on récupère la liste de compétences lier à cette annonce
         $listAdvertSkills = $repoAdvertSkill->findBy(['advert' => $advert]);
 
+        // récupère toutes les annonces qui correspondent à une liste de catégories
+        //$listAdvertsByCategory = $repo->getAdvertWithCategories(['Développement web', 'Intégration']);
+
 
         
         //return new Response("Affichage de l'annonce d'id : '{$id}' , avec le tag : {$tag} {$ok} ");
@@ -141,7 +150,8 @@ class AdvertController extends AbstractController
             'tag' => $tag,
             'advert' => $advert,
             'listApplications' => $listApplications,
-            'listAdvertSkills' => $listAdvertSkills
+            'listAdvertSkills' => $listAdvertSkills,
+            //'listAdvertsByCategory' => $listAdvertsByCategory 
         ]);
 
         /*return $this->redirectToRoute("OC_advert_index");*/

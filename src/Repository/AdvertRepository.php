@@ -25,14 +25,33 @@ class AdvertRepository extends ServiceEntityRepository
                    ->leftJoin('a.applications', 'app') // on crée une jointure avec leftJoin() ou innerJoin()
                    ->addSelect('app'); // on selectionne l'entité jointe grace a son alias 'app'
 
+        //on retourne le résultat           
         return $qb->getQuery()
                   ->getResult();
     }
 
-    public function getAdvertWithCategories(array $categoryName)
+    /**
+     * récupère toutes les annonces qui correspondent à une liste de catégories
+     */
+    public function getAdvertWithCategories(array $categoryNames)
     {
-        
+        $qb = $this->createQueryBuilder('a') // on crée une select('a')
+                   ->innerJoin('a.categories', 'c') // on crée une jointure avec innerJoin() et on crée son alias qui sera 'c'
+                   ->addSelect('c'); // on selectionne l'entité jointe grace a son alias 'c'
+                   
+        // puis on filtre sur le nom des catégories à l'aide d'un IN           
+        $qb->where($qb->expr()->in('c.name', $categoryNames));
+
+        /* expr() permet de créer une expression qui sera traduite comme ça " WHERE c.name IN [...]
+            pour une expr(), il y a des : IN, LIKE, ORX
+        " */
+
+        //on retourne le résultat           
+        return $qb->getQuery()
+                  ->getResult();
     }
+
+    
 
     /*
     public function whereCurrentYear(QueryBuilder $queryBuilder)

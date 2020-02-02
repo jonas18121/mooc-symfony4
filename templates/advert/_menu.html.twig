@@ -1,5 +1,10 @@
 <ul class="nav nav-pills nav-stacked">
     {% for advert in listAdverts %}
         <li><a href="{{ path('OC_advert_view', {'id': advert.id}) }}">{{ advert.title }}</a></li>
-    {% endfor %}    
+    {% endfor %} 
+
+    {% for limit in limits %}
+        {{ limit.author}}
+    {% endfor %}
+    {{ dump(limits)}}   
 </ul>

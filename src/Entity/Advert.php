@@ -8,6 +8,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AdvertRepository")
+ * 
+ * on dit à Doctrine que notre entité contient des callbacks de cycle de vie
+ * @ORM\HasLifecycleCallbacks() 
  */
 class Advert
 {
@@ -62,6 +65,11 @@ class Advert
      * @ORM\OneToMany(targetEntity="App\Entity\AdvertSkill", mappedBy="advert", orphanRemoval=true)
      */
     private $advertSkills;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updatedAt;
 
     // les listes d'objet sont des ArrayCollection()
     public function __construct()
@@ -234,5 +242,29 @@ class Advert
         }
 
         return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /** faire automatiquement la mise à jour de la date à chaque modification d'une annonce
+     * 
+     * PreUpdate nous permet de faire en sorte que cette méthode s'exécute juste avant que l'entité
+     * soit modifiée dans la base de données.
+     * 
+     * @ORM\PreUpdate
+     */
+    public function updateDate()
+    {
+        $this->setUpdatedAt(new \DateTime());
     }
 }

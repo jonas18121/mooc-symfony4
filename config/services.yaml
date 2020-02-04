@@ -16,6 +16,9 @@ services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        bind:
+            \Swift_Mailer: '@swift.mailer.second_mailer'
+            $specialMailer: '@swift.mailer.second_mailer'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -34,3 +37,8 @@ services:
 
     OC_platforme.antispam:               #nom du service qu'on va utiliser pour l'appeller         
         class: App\AntiSpam\OCAntiSpame      #defini le namespace complet de la classe du service
+
+    OC_platform.email.application_mailer:
+        class: App\Email\ApplicationMailer
+        arguments:
+            - "@mailer"

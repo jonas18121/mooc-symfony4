@@ -6,6 +6,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ApplicationRepository")
+
+ * on dit à Doctrine que notre entité contient des callbacks de cycle de vie
+ * @ORM\HasLifecycleCallbacks() 
  */
 class Application
 {
@@ -93,5 +96,24 @@ class Application
         $this->advert = $advert;
 
         return $this;
+    }
+
+    /** il va appelé la methode increaseApplication() qui est dans Advert
+     * 
+     * 
+     * @ORM\PrePersist
+     */
+    public function increase()
+    {
+        $this->getAdvert()->increaseApplication();
+    }
+
+    /** il va appelé la methode decreaseApplication() qui est dans Advert
+     * 
+     * @ORM\PreRemove
+     */
+    public function decrease()
+    {
+        $this->getAdvert()->decreaseApplication();
     }
 }

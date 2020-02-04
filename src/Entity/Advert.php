@@ -71,6 +71,11 @@ class Advert
      */
     private $updatedAt;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $nbApplications = 0;
+
     // les listes d'objet sont des ArrayCollection()
     public function __construct()
     {
@@ -259,12 +264,40 @@ class Advert
     /** faire automatiquement la mise à jour de la date à chaque modification d'une annonce
      * 
      * PreUpdate nous permet de faire en sorte que cette méthode s'exécute juste avant que l'entité
-     * soit modifiée dans la base de données.
+     * soit modifiée dans la base de données. avant $em->persist($entity)
      * 
      * @ORM\PreUpdate
      */
     public function updateDate()
     {
         $this->setUpdatedAt(new \DateTime());
+    }
+
+    public function getNbApplications(): ?int
+    {
+        return $this->nbApplications;
+    }
+
+    public function setNbApplications(int $nbApplications): self
+    {
+        $this->nbApplications = $nbApplications;
+
+        return $this;
+    }
+
+    /** compte le nombre de candidat qui a postulé a une annonce et
+     * l'incrémente à +1
+     */
+    public function increaseApplication()
+    {
+        $this->nbApplications++;
+    }
+
+    /** compte le nombre de candidat qui a postulé a une annonce et 
+     * le décrémente à -1
+     */
+    public function decreaseApplication()
+    {
+        $this->nbApplications--;
     }
 }

@@ -31,21 +31,23 @@ class AdvertController extends AbstractController
      //affiché les dernières annonces
     public function menuAction($limit, AdvertRepository $repo, ApplicationRepository $ApplicationRepo)
     {
-        /*$listAdverts = [
-            ['id' => 2, 'title' => 'Recherche développeur Symfony'],
-            ['id' => 3, 'title' => 'mission développeur Angular/Symfony'],
-            ['id' => 4, 'title' => 'stage pour développeur php'],
-            ['id' => 5, 'title' => 'stage pour développeur python']
-        ];*/
-
         // récupère toutes les annonces qui correspondent à une liste de catégories
-        $listAdvertsByCategory = $repo->getAdvertWithCategories(['Développement web', 'Intégration']);
+        //$listAdvertsByCategory = $repo->getAdvertWithCategories(['Développement web', 'Intégration']);
 
         // récupère les X dernières candidatures avec leurs annonces associer
-        $limits = $ApplicationRepo->getApplicationsWithAdvert(1);
+        //$limits = $ApplicationRepo->getApplicationsWithAdvert(3);
+
+        $limits = 3;
+
+        $listAdverts = $repo->findBy(
+            [],                 //critères
+            ['date' => 'desc'], //on trie par date décroissante 
+            $limits,            //on limite de nombre d'annonces qu'on veut afficher
+            0                   //a partir d'un premier
+        );
 
         return $this->render('advert/_menu.html.twig',[
-            'listAdverts' => $listAdvertsByCategory,
+            'listAdverts' => $listAdverts,
             'limits' => $limits
         ]);
     }
@@ -69,48 +71,38 @@ class AdvertController extends AbstractController
      *  }
      * )
      */
-    public function index($page)
+    public function index($page, AdvertRepository $repo)
     {
         if($page < 1)
         {
             throw $this->createNotFoundException("page '{$page}' inexistante"); // on lance une erreur 404
         }
 
-        $listAdverts = [
-            [
-                'id' => 2, 
-                'title' => 'Recherche développeur Symfony',
-                'author' => 'Alexandre',
-                'content' => 'Nous recherchons un developpeur Symfony sur Nantes',
-                'date' => new \Datetime()
-            ],
-            [
-                'id' => 3, 
-                'title' => 'Mission développeur Angular/Symfony',
-                'author' => 'Kassandra',
-                'content' => 'Nous avons une misson pour un developpeur Angular/Symfony sur Nantes',
-                'date' => new \Datetime()
-            ],
-            [
-                'id' => 4, 
-                'title' => 'Stage pour développeur php',
-                'author' => 'Olvier',
-                'content' => 'Nous recherchons un developpeur pour un stage magique sur Nantes',
-                'date' => new \Datetime()
-            ],
-            [
-                'id' => 5, 
-                'title' => 'Stage pour développeur python',
-                'author' => 'Pierre',
-                'content' => 'Super stage pour un developpeur python sur Nantes',
-                'date' => new \Datetime()
-            ]
-        ];
+        $nbPerPage = 3;
+
+        //on récupère toutes les annonces
+        $listAdverts = $repo->getAdverts($page, $nbPerPage);
+
+        //dump(ceil(count($listAdverts) / $nbPerPage));die;
+
+        /* on calcule le nombre total de pages grace au count($listAdverts) 
+        et ceil() va arroundir le chiffre décimal (float) en entier (integer),
+        puis retoune le nombre total
+        d'annonces */
+        $nbPages = ceil(count($listAdverts) / $nbPerPage);
+
+        //si la page n'existe pas, on retourne une erreur 404
+        if($page > $nbPages)
+        {
+            throw $this->createNotFoundException("La page {$page} n'existe pas.");
+        }
         
 
         return $this->render('advert/index.html.twig', [
-            'name' => 'zoubert',
-            'listAdverts' => $listAdverts
+            'name'        => 'zoubert',
+            'listAdverts' => $listAdverts,
+            'nbPages'     => $nbPages,
+            'page'        => $page
         ]);
     }
 
@@ -139,9 +131,6 @@ class AdvertController extends AbstractController
         // on récupère la liste de compétences lier à cette annonce
         $listAdvertSkills = $repoAdvertSkill->findBy(['advert' => $advert]);
 
-        // récupère toutes les annonces qui correspondent à une liste de catégories
-        //$listAdvertsByCategory = $repo->getAdvertWithCategories(['Développement web', 'Intégration']);
-
 
         
         //return new Response("Affichage de l'annonce d'id : '{$id}' , avec le tag : {$tag} {$ok} ");
@@ -150,17 +139,8 @@ class AdvertController extends AbstractController
             'tag' => $tag,
             'advert' => $advert,
             'listApplications' => $listApplications,
-            'listAdvertSkills' => $listAdvertSkills,
-            //'listAdvertsByCategory' => $listAdvertsByCategory 
+            'listAdvertSkills' => $listAdvertSkills
         ]);
-
-        /*return $this->redirectToRoute("OC_advert_index");*/
-
-        /*$userId = $session->get('userId');
-        var_dump($userId);
-        $session->set('userId',91);
-        return new Response("okokokokokok");*/
-
     }
 
     /**
@@ -170,9 +150,9 @@ class AdvertController extends AbstractController
     {
 
         $advert = new Advert();
-        $advert->setTitle('Formation en apprentissage en tant que developpeur fullstack')
-               ->setAuthor('mougli')
-               ->setContent('Nous proposons un contrat d\'apprentissage en tant que developpeur sur Nantes')
+        $advert->setTitle('recherche 5 developpeur fullstack Symfony/Angular')
+               ->setAuthor('Julien')
+               ->setContent('recherche 5 developpeur fullstack Symfony/Angular pour un gros projet sur Nantes')
                ->setDate(new \Datetime());
 
         $image = new Image();
@@ -224,7 +204,7 @@ class AdvertController extends AbstractController
             $this->addFlash('notice', 'Annonce bien enregistrée');// on fait le petit message flash
 
             //et on fait une redirection
-            return $this->redirectToRoute('OC_advert_view', ['id' => 5]);
+            return $this->redirectToRoute('OC_advert_view', ['id' => $advert->getId()]);
         }
 
         //sinon on affiche le formulaire
@@ -238,19 +218,12 @@ class AdvertController extends AbstractController
      *      "id" = "[0-9]+"
      * })
      */
-    public function edit($id, Request $request, AdvertRepository $repoArticle, CategoryRepository $repoCategory, EntityManagerInterface $manager)
+    public function edit($id, Request $request, AdvertRepository $repoAdvert, CategoryRepository $repoCategory, EntityManagerInterface $manager)
     {
         /* ici récupération de $id */ 
-        /*$advert = [
-            'id' => 2, 
-            'title' => 'Recherche développeur Symfony',
-            'author' => 'Alexandre',
-            'content' => 'Nous recherchons un developpeur Symfony sur Nantes',
-            'date' => new \Datetime()
-        ];*/
 
         //on récupère l'id de l'annonce
-        $advert = $repoArticle->find($id);
+        $advert = $repoAdvert->find($id);
 
         if($advert === null){
             throw new \Exception("L'annonce qui à cette id : {$id} n'existe pas.");
@@ -274,7 +247,7 @@ class AdvertController extends AbstractController
             $this->addFlash('notice', 'Annonce bien modifiée');// on fait le petit message flash
 
             //et on fait une redirection
-            return $this->redirectToRoute('OC_advert_view', ['id' => 5]);
+            return $this->redirectToRoute('OC_advert_view', ['id' => $advert->getId()]);
         }
 
         //sinon on affiche le formulaire

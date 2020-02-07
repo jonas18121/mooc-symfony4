@@ -6,6 +6,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AdvertRepository")
  * 
@@ -76,12 +78,20 @@ class Advert
      */
     private $nbApplications = 0;
 
+    /**
+    * @ Gedmo\Slug(fields={"title"})
+    * @ ORM\Column(name="slug", string="string", length=255, unique=true)
+    */
+    private $slug;
+
+
     // les listes d'objet sont des ArrayCollection()
     public function __construct()
     {
         $this->applications = new ArrayCollection();
-        $this->categories = new ArrayCollection();
+        $this->categories   = new ArrayCollection();
         $this->advertSkills = new ArrayCollection();
+        $this->date         = new \DateTime();
     }
 
     public function getId(): ?int
@@ -157,6 +167,27 @@ class Advert
     public function setImage(?Image $image): self
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    
+    /**
+     * Get the value of slug
+     */ 
+    public function getSlug() : ?string
+    {
+        return $this->slug;
+    }
+
+    /**
+     * Set the value of slug
+     *
+     * @return  self
+     */ 
+    public function setSlug(string $slug) : self
+    {
+        $this->slug = $slug;
 
         return $this;
     }
@@ -300,4 +331,5 @@ class Advert
     {
         $this->nbApplications--;
     }
+
 }

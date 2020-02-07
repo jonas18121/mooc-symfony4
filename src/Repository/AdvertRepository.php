@@ -6,6 +6,8 @@ use App\Entity\Advert;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
+use Doctrine\ORM\Tools\Pagination\Paginator;
+
 /**
  * @method Advert|null find($id, $lockMode = null, $lockVersion = null)
  * @method Advert|null findOneBy(array $criteria, array $orderBy = null)
@@ -19,6 +21,44 @@ class AdvertRepository extends ServiceEntityRepository
         parent::__construct($registry, Advert::class);
     }
 
+    /**
+     * récupérer les annonces triées par date 
+     */
+    public function getAdverts($page, $nbPerPage)
+    {
+        $query = $this->createQueryBuilder('a') // on crée une select('a')
+
+                      //jointure sur l'attribut image
+                      ->leftJoin('a.image', 'i')
+                      ->addSelect('i')
+
+                      //jointure sur l'attribut categories
+                      ->leftJoin('a.categories', 'c')
+                      ->addSelect('c')
+
+                      //trie par date en ordre décroissante
+                      ->orderBy('a.date', 'DESC')
+
+                      ->getQuery()
+        ; 
+        
+        //dump(($page-1)* $nbPerPage);die;
+        //on définit l'annonce à partir de laquelle commencer la liste
+        $query->setFirstResult(($page-1)* $nbPerPage)
+
+              //Ainsi que le nombre d'annonce à afficher sur une page
+              ->setMaxResults($nbPerPage)
+        ;
+
+        //on retourne l'objet Paginator
+        return new Paginator($query, true);
+        
+    }
+
+
+    /**
+     * récupère toutes les candidature qui correspondent à une liste d'annonces
+     */
     public function getAdvertWithApplication()
     {
         $qb = $this->createQueryBuilder('a') // on crée une select('a')

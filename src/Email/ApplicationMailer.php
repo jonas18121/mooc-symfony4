@@ -6,12 +6,11 @@ namespace App\Email;
 
 use App\Entity\Application;
 use App\Repository\ApplicationRepository;
-use \Swift_Mailer;
 
 class ApplicationMailer
 {
 
-    /** @var Swift_Mailer */
+    /** @var \Swift_Mailer */
     private $mailer;
 
     public function __construct(\Swift_Mailer $mailer)

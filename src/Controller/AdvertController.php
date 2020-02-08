@@ -26,8 +26,29 @@ use App\Entity\AdvertSkill;
 use App\Repository\AdvertSkillRepository;
 use App\Repository\SkillRepository;
 
+use App\Purger\OCPurger;
+
 class AdvertController extends AbstractController
 {
+    /** purger les annonces de plus de X jours
+     * @Route("/advert/purge/{days}", name="OC_advert_purge", requirements={
+     *      "days" = "[0-9]{1,}"
+     * })
+     */
+    public function purgeAction($days, Request $request, OCPurger $purger)
+    {
+        //On purge les annonces
+        $purger->purge($days);
+
+        // on fait le petit message flash
+        $this->addFlash('info', "Les annonces plus vieilles que {$days} jours ont été purgées.");
+
+        //on redirige vers la page d'accueil
+        return $this->redirectToRoute('OC_advert_index');
+    }
+
+
+
      //affiché les dernières annonces
     public function menuAction($limit, AdvertRepository $repo, ApplicationRepository $ApplicationRepo)
     {

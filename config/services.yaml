@@ -42,3 +42,6 @@ services:
         class: App\Email\ApplicationMailer
         arguments:
             - "@mailer"
+
+    OC_platform.purger.advert:
+        class: App\Purger\OCPurger

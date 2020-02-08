@@ -22,6 +22,23 @@ class AdvertRepository extends ServiceEntityRepository
     }
 
     /**
+     * récupérer les annonces de plus de X jours
+     */
+    public function getAdvertsBefore(\DateTime $date)
+    {
+        $query = $this->createQueryBuilder('a')
+                      ->where('a.updatedAt <= :date')                       // Date de modification antérieure à :date
+                      ->orWhere('a.updatedAt IS NULL AND a.date <= :date')  // Si la date de modification est vide, on vérifie la date de création
+                      ->andWhere('a.applications IS EMPTY')                 // On vérifie que l'annonce ne contient aucune candidature
+                      ->setParameter('date', $date)
+                      ->getQuery()
+        ;
+
+        return $query->getResult();
+    }
+
+
+    /**
      * récupérer les annonces triées par date 
      */
     public function getAdverts($page, $nbPerPage)

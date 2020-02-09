@@ -20,7 +20,7 @@ class OCAntiSpame
         /*$text = (strlen($text) < 50) ? true : false;
         return $text;*/
 
-        return (strlen($text->getContent()) < 50) ? true : false;
+        return (strlen($text->getContent()) < 10) ? true : false;
         //return !is_object($text);
     }
 }

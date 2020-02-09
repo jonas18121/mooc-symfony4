@@ -26,7 +26,14 @@ use App\Entity\AdvertSkill;
 use App\Repository\AdvertSkillRepository;
 use App\Repository\SkillRepository;
 
-use App\Purger\OCPurger;
+use App\Purger\OCPurger;//je vais l'utiliser ce service en fesant des injection de dépendance
+use Symfony\Component\Form\Extension\Core\Type\FormType as TypeFormType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class AdvertController extends AbstractController
 {
@@ -170,6 +177,72 @@ class AdvertController extends AbstractController
     public function add(Request $request, EntityManagerInterface $manager, SkillRepository $repoSkill)
     {
 
+        //On crée un objet Advert
+        $advert = new Advert();
+
+        // pour pré-remplire un formulaire
+        $advert->setDate(new \DateTime());
+
+        //On crée le formBuilder grace au service form factory 
+        $createFormBuilder = $this->createFormBuilder($advert);
+        //$formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $advert);
+
+        // On ajoute les champs de l'entité que l'on veut à notre formulaire
+        $createFormBuilder
+            ->add('title',      TextType::class)
+            ->add('date',       DateType::class)
+            ->add('content',    TextareaType::class)
+            ->add('author',     TextType::class)
+            ->add('published',  CheckboxType::class, [ 'required' => false ])//'required' => false pour que le champs soit facultatif
+            ->add('save',       SubmitType::class)
+        ;  
+
+        //A partir du createFormBuilder, on génère le formulaire
+        $form = $createFormBuilder->getForm();
+        //$form = $form->createView();
+        
+        
+        
+        // si la requête est en POST
+        if($request->isMethod('POST')) 
+        {
+            /* ici on traite le formulaire */ 
+
+
+            /* handleRequest($request) dit au formulaire :
+                - Voici la requête d'entrée (nos variable sont de type post)
+                - Lis cette requête, 
+                - Récupère les valeurs qui t'intéressent,
+                - Hydrate l'objet  
+            */
+            $form->handleRequest($request);
+
+            //On vérifie que les valeurs entrées sont correctes
+            if($form->isValid()){
+
+                $manager->persist($advert);
+                $manager->flush();
+            }
+
+            $this->addFlash('notice', 'Annonce bien enregistrée');// on fait le petit message flash
+
+            //et on fait une redirection
+            return $this->redirectToRoute('OC_advert_view', ['id' => $advert->getId()]);
+        }
+
+        //sinon on affiche le formulaire
+        return $this->render('advert/add.html.twig',[
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/advert/add", name="OC_advert_add")
+     */
+    /*
+    public function add(Request $request, EntityManagerInterface $manager, SkillRepository $repoSkill)
+    {
+
         $advert = new Advert();
         $advert->setTitle('recherche 5 developpeur fullstack Symfony/Angular')
                ->setAuthor('Julien')
@@ -220,7 +293,7 @@ class AdvertController extends AbstractController
 
         if($request->isMethod('POST')) // si la requête est en POST
         {
-            /* ici on traite le formulaire */ 
+            /* ici on traite le formulaire */ /*
 
             $this->addFlash('notice', 'Annonce bien enregistrée');// on fait le petit message flash
 
@@ -233,6 +306,7 @@ class AdvertController extends AbstractController
             'advert' => $advert
         ]);
     }
+    */
 
     /**
      * @Route("/advert/edit/{id}", name="OC_advert_edit", requirements={

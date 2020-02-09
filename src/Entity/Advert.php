@@ -17,6 +17,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Advert
 {
     /**
+     * @var int
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -24,21 +25,25 @@ class Advert
     private $id;
 
     /**
+     * @var string
      * @ORM\Column(type="string", length=255)
      */
     private $title;
 
     /**
+     * @var string
      * @ORM\Column(type="string", length=255)
      */
     private $author;
 
     /**
+     * @var string
      * @ORM\Column(type="text")
      */
     private $content;
 
     /**
+     * @var \DateTime
      * @ORM\Column(type="datetime")
      */
     private $date;

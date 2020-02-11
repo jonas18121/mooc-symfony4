@@ -5,6 +5,8 @@
 <div class="well">
     {# {{ form(form) }} #}
 
+    
+
     {{ 
         form_start(form, {
             'attr' : {
@@ -136,6 +138,23 @@
         </div>
     </div>
 
+    {#<div class="col-sm-10">
+    {# On ajoute le champ categories pour pouvoir géré le CollectionType avec le javascript 
+    {{ form_row(form.categories) }}
+    <a href="#" id="add_category" class="btn btn-default" >Ajouter une catégorie</a>
+    </div>#}
+    <div class="form-group">
+        
+        <div class="col-sm-2">
+            {{ form_errors(form.categories) }}
+        </div>
+
+        <div class="col-sm-8">
+            {{ form_row(form.categories) }}
+        </div>
+        <a href="#" id="add_category" class="btn btn-default" >Ajouter une catégorie</a>
+    </div>
+
     {{ 
         form_widget(form.save, {
             'attr' : {
@@ -153,3 +172,81 @@
     {# fermeture de la balise form #}
     {{ form_end(form) }}
 </div>
+
+
+{# on charge le CDN de JQuery #}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        
+        /* on récupère la balise <div> qui contient l'attribut ''data-prototype'' */
+        let $container = $('div#advert_categories');
+
+        /* on définit un compteur unique pour nommer les champs qu'on va ajouter dynamiquement */
+        let index = $container.find(':input').length;
+
+        //On ajoute un nouveau champ à chaque clic sur le lien d'ajout.
+        $('#add_category').click(function(e){
+
+            addCategory($container);
+
+            e.preventDefault(); // évite qu'un # apparaisse dans l'URL
+
+            return false;
+            
+        });
+
+        // On ajoute un 1er champ automatiquement , s'il n'en existe pas déjà un
+        if(index == 0){
+            addCategory($container);
+        } else{
+
+            //s' il existe déjà , on ajout un lien supprimer
+            $container.children('div').each(function(){
+                addDeleteLink($(this));
+            });
+        }
+
+        //la function qui ajoute un CategoryType
+        function addCategory($container)
+        {
+            
+            /* Dans le contenu de l'attribut data-prototype, on remplace:
+                - le texte "__name__label__" qu'il contient par le label du champ
+                - le texte "__name__" qu'il contient par le numéro du champ */
+            var template = $container.attr('data-prototype').replace(/__name__label__/g, 'Categorie n°' + (index+1)).replace(/__name__/g, index);
+
+            //on crée un objet JQuery qui contient ce template
+            let $prototype = $(template);
+
+            //on ajoute au prototype un lien pour pouvoir supprimer la categorie
+            addDeleteLink($prototype);
+
+            //On ajoute le prototype modifié à la fin de la balise <div>
+            $container.append($prototype);
+
+            //on incrémente le compteur
+            index++;
+        }
+
+        // la function qui a ajoute un lien de suppression d'une catégorie
+        function addDeleteLink($prototype)
+        {
+            //Création du lien
+            let $deleteLink = $('<a href="#" class="btn btn-danger">Supprimer</a>');
+
+            //ajoute du lien
+            $prototype.append($deleteLink);
+
+            //Ajout du listener sur le clic du lien pour effectivement supprimer la catégorie
+            $deleteLink.click(function(e){
+                $prototype.remove();
+
+                e.preventDefault();
+
+                return false;
+            });
+        }
+    });
+</script>

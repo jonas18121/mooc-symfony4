@@ -64,7 +64,7 @@ class Advert
     private $applications;
 
     /**                                                     Advert est propriétaire
-     * @ORM\ManyToMany(targetEntity="App\Entity\Category", inversedBy="adverts")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Category", inversedBy="adverts", cascade={"persist", "remove"})
      */
     private $categories;
 

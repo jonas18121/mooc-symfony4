@@ -18,6 +18,9 @@ class CategoryType extends AbstractType
         ;
     }
 
+    /**
+     * Ce formulaire se construira autour de l'objet Category
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([

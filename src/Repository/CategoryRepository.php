@@ -19,6 +19,18 @@ class CategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Category::class);
     }
 
+    //retourne que les annonces
+    // retourne un QueryBuilder
+    public function getLikeQueryBuilder($pattern)
+    {
+        return $this
+            ->createQueryBuilder('c')
+            ->where('c.name LIKE :pattern')
+            ->setParameter('pattern', $pattern)
+        ;
+    }
+
+
     // /**
     //  * @return Category[] Returns an array of Category objects
     //  */

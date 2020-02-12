@@ -320,10 +320,26 @@ class AdvertController extends AbstractController
         $manager->flush();
 
 
-
+        //On crée le formulaire
+        $form = $this->createForm(AdvertType::class, $advert);
 
         if($request->isMethod('POST')) // si la requête est en POST
         {
+            /* handleRequest($request) dit au formulaire :
+                - Voici la requête d'entrée (nos variable sont de type post)
+                - Lis cette requête, 
+                - Récupère les valeurs qui t'intéressent,
+                - Hydrate l'objet  
+            */
+            $form->handleRequest($request);
+
+            //On vérifie que les valeurs entrées sont correctes
+            if($form->isValid()){
+
+                $manager->persist($advert);
+                $manager->flush();
+            }
+            
             $this->addFlash('notice', 'Annonce bien modifiée');// on fait le petit message flash
 
             //et on fait une redirection
@@ -332,7 +348,8 @@ class AdvertController extends AbstractController
 
         //sinon on affiche le formulaire
         return $this->render('advert/edit.html.twig',[
-            'advert' => $advert
+            'advert' => $advert,
+            'form' => $form->createView()
         ]);
     }
 

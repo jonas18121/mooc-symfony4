@@ -18,8 +18,10 @@
     {# Les erreurs générales du formulaire. #}
     {{ form_errors(form) }}
 
-    {# Génération du label + error + widget pour un champ. #}
-    {{ form_row(form.date) }}
+    {% if form.date is defined %}
+        {# Génération du label + error + widget pour un champ. #}
+        {{ form_row(form.date) }}
+    {% endif %}
 
     {# Génération manuelle et éclatée #}
     <div class="form-group">
@@ -165,7 +167,7 @@
 
 
     {# generation automatique des champs pas encore écrit
-    et tous les champs caché de type hidden #}
+    et tous les champs caché de type hidden comme la CRSF #}
     {{ form_rest(form) }}
 
 
@@ -198,7 +200,7 @@
         });
 
         // On ajoute un 1er champ automatiquement , s'il n'en existe pas déjà un
-        if(index == 0){
+        if(index === 0){
             addCategory($container);
         } else{
 

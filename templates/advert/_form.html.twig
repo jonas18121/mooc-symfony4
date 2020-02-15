@@ -96,6 +96,7 @@
     {{ form_row(form.published) }}
 
     <div class="form-group">
+    {#
         {{ 
             form_label(form.image.url, "URL de l'image", {
                 'label_attr' : {
@@ -115,9 +116,31 @@
                 })
             }}
         </div>
+        #}
+
+        {{ 
+            form_label(form.image.file, "Télécharger un fichier", {
+                'label_attr' : {
+                    'class' : 'col-sm-2 control-label'
+                }
+            }) 
+        }}
+
+        {{ form_errors(form.image.file) }}
+
+        <div class="col-sm-10">
+            {{
+                form_widget(form.image.file,{
+                    'attr' : {
+                        'class' : 'form-control'                   
+                    }
+                })
+            }}
+        </div>
+
     </div>
 
-
+    {#
     <div class="form-group">
         {{ 
             form_label(form.image.alt, "Légende de l'image", {
@@ -139,6 +162,7 @@
             }}
         </div>
     </div>
+    #}
 
     {#<div class="col-sm-10">
     {# On ajoute le champ categories pour pouvoir géré le CollectionType avec le javascript 

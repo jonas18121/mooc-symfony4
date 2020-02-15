@@ -31,6 +31,50 @@ class Image
      */
     private $advert;
 
+    
+    private $file;
+
+
+
+    /**
+     * Manipulé le fichier envoyer
+     */
+    public function upload()
+    {
+        //s'il n'y a pas de fichier, on ne fait rien
+        if(null === $this->file){
+            return;
+        }
+
+        //On récupère le nom originale du fichier de l'internaute
+        $name = $this->file->getClientOriginalName();
+
+        //On déclare le fichier envoyé dans le répertoire de notre choix
+        $this->file->move($this->getUploadRootDir(), $name);
+
+        // On sauvegarde le nom de fichier dans notre attribut $url
+        $this->url = $name;
+
+        //On crée également le future attribut alt de notre balise <img>
+        $this->alt = $name; 
+    }
+
+    /**
+     * On retourne le chemin relatif vers l'image pour un navigateur
+     */
+    public function getUploadDir()
+    {
+        return 'image';
+    }
+
+    /**
+     * On retourne le chemin relatif vers l'image pour notre code PHP
+     */
+    public function getUploadRootDir()
+    {
+        return __DIR__ . "/../../../public/{$this->getUploadDir()}";
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -74,6 +118,18 @@ class Image
         if ($advert->getImage() !== $newImage) {
             $advert->setImage($newImage);
         }
+
+        return $this;
+    }
+
+    public function getFile(): ?string
+    {
+        return $this->file;
+    }
+
+    public function setFile(?string $file): self
+    {
+        $this->file = $file;
 
         return $this;
     }

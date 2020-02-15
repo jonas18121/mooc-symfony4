@@ -74,7 +74,7 @@ class AdvertType extends AbstractType
             ->add('save',       SubmitType::class)
         ;
 
-        
+
         //CONSTRUIRE UN FORMULAIRE DIFFEREMMENT SELON DES PARAMETRE
 
         //On ajoute une function qui va écouter un évènement
@@ -89,13 +89,14 @@ class AdvertType extends AbstractType
 
                 //on récupère l'objet sous-jacent
                 $advert = $event->getData();
-
+                
 
                 if(null === $advert){
-                    return; // on sort de la fonction sans rien faire , si $advert est
+                    return; // on sort de la fonction sans rien faire , si $advert vaut null
                 }
 
-
+                /* Si l'annone n'est pas publié ou si elle n'existe pas encore en base de donnée 
+                (id est null) */
                 if(!$advert->getPublished() || null === $advert->getId())
                 {
                     //on ajoute un champ published

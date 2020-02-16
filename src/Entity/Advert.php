@@ -8,6 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 
+use App\Entity\Category;
+
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AdvertRepository")
  * 

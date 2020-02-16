@@ -42,18 +42,18 @@ class AdvertType extends AbstractType
             //->add('published',  CheckboxType::class, [ 'required' => false ])
             ->add('image',      ImageType::class) // le formulaire de la classe Image est imbriqué dans celui de Advert
 
-            /* 
+            /* */
             //imbriquer le formulaire de Category dans celui de Advert grace à CollectionType
             ->add('categories', CollectionType::class,[
                 'entry_type'  =>CategoryType::class,
                 'allow_add'   =>true,
                 'allow_delete'=>true
             ])
-            */
+            
 
 
             //imbriquer le formulaire de Category dans celui de Advert grace à EntityType
-            /* */
+            /* 
             ->add('categories', EntityType::class,[
                 'class'  =>     Category::class,
                 'choice_label'  => 'name',
@@ -62,12 +62,12 @@ class AdvertType extends AbstractType
                 /* pour afficher des category qui commence par une certaine lettre qui sera dans $pattern,
                 ici on a choisi la lettre D 
                 si on veut affiché toute la liste de catégorie sans ce préoccupé de leur première lettre
-                on enlève l'option query_builder */
+                on enlève l'option query_builder /
                 'query_builder' => function(CategoryRepository $repository) use ($pattern)
                 {
                     return $repository->getLikeQueryBuilder($pattern);
                 }
-            ])
+            ])*/
             /**/
 
 

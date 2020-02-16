@@ -194,7 +194,7 @@ class AdvertController extends AbstractController
             /* ici on traite le formulaire */ 
 
             //déplace l'image là où on veut les stockées
-            $advert->getImage()->upload();
+            //$advert->getImage()->upload();
 
 
             /* handleRequest($request) dit au formulaire :

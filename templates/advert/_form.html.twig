@@ -176,7 +176,13 @@
         </div>
 
         <div class="col-sm-8">
-            {{ form_row(form.categories) }}
+            {{ 
+                form_row(form.categories, {
+                    'attr' : {
+                        'id' : 'add_category'
+                    }
+                }) 
+            }}
         </div>
         <a href="#" id="add_category" class="btn btn-default" >Ajouter une catégorie</a>
     </div>
@@ -207,7 +213,8 @@
     $(document).ready(function(){
         
         /* on récupère la balise <div> qui contient l'attribut ''data-prototype'' */
-        let $container = $('div#advert_categories');
+        //let $container = $('div#advert_categories');
+        let $container = $('select#advert_categories');
 
         /* on définit un compteur unique pour nommer les champs qu'on va ajouter dynamiquement */
         let index = $container.find(':input').length;

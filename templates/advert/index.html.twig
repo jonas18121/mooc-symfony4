@@ -21,8 +21,9 @@
                     <a href="{{ path('OC_advert_view', {'id' : advert.id}) }}">{{ advert.title }}</a>
                     par {{ advert.author}}, le {{ advert.date|date('d/m/Y') }} 
                     {% if advert.image is not null %}
-                        <img src="{{ advert.image.url }}" alt="{{ advert.image.alt }}">
+                        <img src="{{ asset(advert.image.webPath) }}" alt="{{ advert.image.alt }}">
                     {% endif %}
+                    {{ dump(asset(advert.image.webPath)) }}
                 </li>
             {% else %}
                 <li>Pas (encore !) d'annonces</li>

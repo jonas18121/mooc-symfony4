@@ -1,5 +1,5 @@
 .gitignore 
-### on met gitignore en 1er pour qu'il s'ignore lui même ###
+### on met .gitignore en 1er pour qu'il s'ignore lui même ###
 
 ### ici on note le nom des fichier et de dossier que l'on veut ignorer avant de pushé ###
 ###> symfony/framework-bundle ###

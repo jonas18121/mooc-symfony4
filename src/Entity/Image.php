@@ -48,8 +48,7 @@ class Image
      */
     public function getWebPath()
     {
-        //return $this->webPath = $this->getUploadDir() . '/' . $this->getId() . '.' . $this->getUrl();
-        return $this->webPath = $this->getUploadDir() . '/' . $this->getUrl();
+        return $this->webPath = $this->getUploadDir() . '/' . $this->getId() . '.' . $this->getUrl();
     } 
 
     /** 
@@ -66,8 +65,8 @@ class Image
         /* Le nom du fichier est son id, on doit juste stocker également son extension */
         $this->url = $this->file->guessExtension();
 
-        /* On génère l'attribut alt de la balise <img>,
-         à la valeur du nom du fichier sur le PC de l'internaute */
+        /* On génère le nom de l'image dans l'attribut alt de la balise <img>,
+         c'est la valeur du nom du fichier sur le PC de l'internaute. exemple logo.jpg */
         $this->alt = $this->file->getClientOriginalName();
     }
 
@@ -98,7 +97,7 @@ class Image
             $this->getUploadRootDir(),
 
             // Le nom du fichier à créer, ici "id.extension"
-            $this->id . '/' . $this->url
+            $this->id . '.' . $this->url
         );
     }
 
@@ -117,7 +116,7 @@ class Image
     public function removeUpload()
     {
         /* En PostRemove, on n'a pas accès à l'id,
-        on utilise notrenom sauvegardé */
+        on utilise notre nom sauvegardé */
         if(file_exists($this->tempFilename)){
 
             //On supprime le fichier
@@ -139,7 +138,7 @@ class Image
      */
     public function getUploadRootDir()
     {
-        return __DIR__ . "/../../../public/{$this->getUploadDir()}";
+        return dirname(__DIR__) . "/../public/{$this->getUploadDir()}";
     }
 
     public function getFile(): ?string
@@ -164,7 +163,6 @@ class Image
             $this->url = null;
             $this->alt = null;
         }
-
         return $this;
     }
 

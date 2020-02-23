@@ -27,6 +27,7 @@ use App\Repository\AdvertSkillRepository;
 use App\Repository\SkillRepository;
 
 use App\Form\AdvertType;
+use App\Form\AdvertEditType;
 
 use App\Purger\OCPurger;//je vais l'utiliser ce service en fesant des injection de dépendance
 use Symfony\Component\Form\Extension\Core\Type\FormType as TypeFormType;
@@ -320,11 +321,16 @@ class AdvertController extends AbstractController
             $advert->addCategory($category);
         }
 
+        /* inutile de faire 
+            $manager->persist()
+        car doctrine connait déjà notre annonce
+         */
+
         $manager->flush();
 
 
-        //On crée le formulaire
-        $form = $this->createForm(AdvertType::class, $advert);
+        //On crée le formulaire pour faire des modification
+        $form = $this->createForm(AdvertEditType::class, $advert);
 
         if($request->isMethod('POST')) // si la requête est en POST
         {
@@ -339,7 +345,7 @@ class AdvertController extends AbstractController
             //On vérifie que les valeurs entrées sont correctes
             if($form->isValid()){
 
-                $manager->persist($advert);
+                //$manager->persist($advert);
                 $manager->flush();
             }
             
@@ -361,7 +367,7 @@ class AdvertController extends AbstractController
      *      "id" = "[0-9]+"
      * })
      */
-    public function delete($id, AdvertRepository $repoArticle, CategoryRepository $repoCategory, EntityManagerInterface $manager)
+    public function delete($id, AdvertRepository $repoArticle, CategoryRepository $repoCategory, EntityManagerInterface $manager, Request $request)
     {
         //on récupère l'id de l'annonce
         $advert = $repoArticle->find($id);
@@ -370,15 +376,37 @@ class AdvertController extends AbstractController
             throw new \Exception("L'annonce qui à cette id : {$id} n'existe pas.");
         }
 
-        //on supprime toutes les category
-        foreach($advert->getCategories() as $category)
-        {
-            $advert->removeCategory($category);
+        
+
+
+        //on crée un formulaire vide, qui contiendra que le champ CSRF
+        //$form = $this->createForm(AdvertEditType::class, $advert);
+        $form = $this->get('form.factory')->create();
+
+        if($request->isMethod('POST')){
+
+            $form->handleRequest($request);
+            if($form->isValid()){
+
+                //on supprime toutes les category
+                foreach($advert->getCategories() as $category)
+                {
+                    $advert->removeCategory($category);
+                }
+
+                $manager->remove($advert);
+                $manager->flush();
+            }
+
+            $this->addFlash('infon', 'l\'Annonce a bien été supprimée');// on fait le petit message flash
+
+            //et on fait une redirection
+            return $this->redirectToRoute('OC_advert_index');
         }
-
-        $manager->flush();
-
-        return $this->render('advert/delete.html.twig');
+        return $this->render('advert/delete.html.twig', [
+            'advert' => $advert,
+            'form'   => $form->createView(),
+        ]);
     }
 }
 

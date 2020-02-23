@@ -4,7 +4,22 @@
 {% block body %}
 
     <section>
-        <p>Les catégories de l'annonce on bien été supprimer</p>
+        <h2>Supprimer une annonce</h2>
+
+        <p>
+            Etes-vous certain de vouloir supprimer l'annonce "{{ advert.title }}" ?
+        </p>
+
+        <form action="{{ path('OC_advert_delete', {'id' : advert.id}) }}" method="post">
+
+            <a href="{{ path('OC_advert_view', {'id' : advert.id}) }}" class="btn btn-default">Retour à l'annonce</a>
+
+            <input type="submit" value="Supprimer" class="btn btn-danger"/>
+
+            {# Ceci va générer le champ CSRF #}
+            {{ form_rest(form) }}
+        </form>
+
     </section>
 
 {% endblock body %}

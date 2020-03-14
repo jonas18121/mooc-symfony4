@@ -38,6 +38,8 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
+
+
 class AdvertController extends AbstractController
 {
     /** purger les annonces de plus de X jours
@@ -197,6 +199,14 @@ class AdvertController extends AbstractController
             //déplace l'image là où on veut les stockées
             //$advert->getImage()->upload();
 
+            $validator = $this->get('validator');
+
+            $listErrors = $validator->validate($advert);
+
+            if(count($listErrors) > 0){
+                return new Response((string) $listErrors);
+            }else{
+
 
             /* handleRequest($request) dit au formulaire :
                 - Voici la requête d'entrée (nos variable sont de type post)
@@ -217,6 +227,7 @@ class AdvertController extends AbstractController
 
             //et on fait une redirection
             return $this->redirectToRoute('OC_advert_view', ['id' => $advert->getId()]);
+            }
         }
 
         //sinon on affiche le formulaire

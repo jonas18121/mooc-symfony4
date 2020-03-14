@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -19,7 +20,7 @@ use App\Entity\Category;
 class Advert
 {
     /**
-     * @var int
+     * @var int - $id
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -27,36 +28,54 @@ class Advert
     private $id;
 
     /**
-     * @var string
+     * @var string - $title
      * @ORM\Column(type="string", length=255)
+     * 
+     * // le titre doit faire au moins 10 caractères de long
+     * @Assert\Length(min=10)
      */
     private $title;
 
     /**
-     * @var string
+     * @var string - $author
      * @ORM\Column(type="string", length=255)
+     * 
+     * //Le nom de l'auteur doit faire au moins 2 caractère de long
+     * @Assert\Length(min=2)
      */
     private $author;
 
     /**
-     * @var string
+     * @var string - $content
      * @ORM\Column(type="text")
+     * 
+     *  // le contenu ne doit pas être vide
+     * @Assert\NotBlank()
      */
     private $content;
 
     /**
-     * @var \DateTime
+     * @var \DateTime - $date
      * @ORM\Column(type="datetime")
+     * 
+     *  //La date doit être une date valide
+     * @Assert\DateTime()
      */
     private $date;
 
     /**
+     * @var bool - $published
      * @ORM\Column(type="boolean")
      */
     private $published = true ;
 
-    /**                                                 Advert est propriétaire
+    /**
+     * @var Image - $image 
+     *                                                 Advert est propriétaire
      * @ORM\OneToOne(targetEntity="App\Entity\Image", inversedBy="advert", cascade={"persist", "remove"})
+     * 
+     *  // L'image doit être valide selon les règles attachées à l'objet Image
+     * @Assert\Valid()
      */
     private $image;
 

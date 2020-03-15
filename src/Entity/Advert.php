@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 // composer require symfony/validator
 use Symfony\Component\Validator\Constraints as Assert;
 
+
 use Gedmo\Mapping\Annotation as Gedmo;
 
 use App\Entity\Category;
@@ -34,7 +35,7 @@ class Advert
      * @ORM\Column(type="string", length=255)
      * 
      * // le titre doit faire au moins 10 caractères de long
-     * @Assert\Length(min=10)
+     * @Assert\Length(min=10, max=255, minMessage="Le champ titre a besion de minimum 10 caractères")
      */
     private $title;
 
@@ -43,7 +44,7 @@ class Advert
      * @ORM\Column(type="string", length=255)
      * 
      * //Le nom de l'auteur doit faire au moins 2 caractère de long
-     * @Assert\Length(min=2)
+     * @Assert\Length(min=2, max=255, minMessage="Le champ auteur a besoin de minimum 2 caractères")
      */
     private $author;
 
@@ -52,7 +53,8 @@ class Advert
      * @ORM\Column(type="text")
      * 
      *  // le contenu ne doit pas être vide
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message="le contenu ne doit pas être vide")
+     * @Assert\Length(min=10, minMessage="Le champ du contenu a besoin de minimum 10 caractères")
      */
     private $content;
 

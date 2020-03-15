@@ -38,6 +38,10 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
+//Récupérer une instance de Validateur
+//use Symfony\Component\Validator\Validation;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+
 
 
 class AdvertController extends AbstractController
@@ -179,7 +183,7 @@ class AdvertController extends AbstractController
     /**
      * @Route("/advert/add", name="OC_advert_add")
      */
-    public function add(Request $request, EntityManagerInterface $manager, SkillRepository $repoSkill)
+    public function add(Request $request, EntityManagerInterface $manager, SkillRepository $repoSkill, ValidatorInterface $validator, OCAntiSpame $antiSpam)
     {
 
         //On crée un objet Advert
@@ -187,6 +191,8 @@ class AdvertController extends AbstractController
 
         // pour pré-remplire un formulaire
         $advert->setDate(new \DateTime());
+
+        
 
         //On crée le formulaire
         $form = $this->createForm(AdvertType::class, $advert);
@@ -199,13 +205,10 @@ class AdvertController extends AbstractController
             //déplace l'image là où on veut les stockées
             //$advert->getImage()->upload();
 
-            $validator = $this->get('validator');
-
-            $listErrors = $validator->validate($advert);
-
-            if(count($listErrors) > 0){
-                return new Response((string) $listErrors);
-            }else{
+            //$validator = $this->get('validator');
+            // récupérer une instance de validateur
+            //$validator = Validation::createValidator();
+            
 
 
             /* handleRequest($request) dit au formulaire :
@@ -216,21 +219,44 @@ class AdvertController extends AbstractController
             */
             $form->handleRequest($request);
 
-            //On vérifie que les valeurs entrées sont correctes
-            if($form->isValid()){
 
-                $manager->persist($advert);
-                $manager->flush();
+            /*if($antiSpam->isSpam($advert)){
+                throw new \Exception('Votre messages a été détècté comme spam');
+            }*/
+
+        
+            /* /            S E R V I C E   V A L I D A T O R
+
+            récupérer les éventuelles erreurs qui provient de l'entité Advert , fait manuellement
+            //$listErrors = $validator->validate($advert);
+            
+            //si des erreurs sont présentes on retourne les erreurs
+            if(count($listErrors) > 0){
+                return new Response((string) $listErrors);
             }
+            //sinon , on peut envoyer en base de donnée
+            else{*/
 
-            $this->addFlash('notice', 'Annonce bien enregistrée');// on fait le petit message flash
+                /*
+                isValid() va compter le nombre d'erreur et retourne false s'il
+                y a au moins une erreur (donc pas besoin du service validator)
+                */
+                //On vérifie que les valeurs entrées sont correctes
+                if($form->isValid()){
 
-            //et on fait une redirection
-            return $this->redirectToRoute('OC_advert_view', ['id' => $advert->getId()]);
-            }
+                    $manager->persist($advert);
+                    $manager->flush();
+
+                    $this->addFlash('notice', 'Annonce bien enregistrée');// on fait le petit message flash
+                    
+                    //et on fait une redirection
+                    return $this->redirectToRoute('OC_advert_view', ['id' => $advert->getId()]);
+                }
+
+            /*}*/
         }
 
-        //sinon on affiche le formulaire
+        //sinon si ce n'est pas en POST, on affiche le formulaire
         return $this->render('advert/add.html.twig',[
             'form' => $form->createView()
         ]);

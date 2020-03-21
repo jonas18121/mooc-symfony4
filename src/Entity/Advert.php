@@ -9,6 +9,11 @@ use Doctrine\ORM\Mapping as ORM;
 // composer require symfony/validator
 use Symfony\Component\Validator\Constraints as Assert;
 
+/* permet d'utiliser des contraintes callback , afin de faire des contraites personnalisable */
+use Symfony\Component\Validator\Context\ExecutionContextInterface; 
+
+/* permet de valider que la valeur d'un attribut est unique */
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -17,8 +22,11 @@ use App\Entity\Category;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AdvertRepository")
  * 
- * on dit à Doctrine que notre entité contient des callbacks de cycle de vie
- * @ORM\HasLifecycleCallbacks() 
+ * // on dit à Doctrine que notre entité contient des callbacks de cycle de vie
+ * @ORM\HasLifecycleCallbacks()
+ * 
+ * // l'attribut title doit avoir que des valeur unique
+ * @UniqueEntity(fields="title", message="Une annonce existe déjà avec ce titre") 
  */
 class Advert
 {
@@ -123,6 +131,30 @@ class Advert
         $this->advertSkills = new ArrayCollection();
         $this->date         = new \DateTime();
     }
+
+    /**
+     * mettre en place une règle qui va rendre invalide le contenu 
+     * s'il contient les mots (démotivation et abandon)
+     * 
+     * @Assert\Callback
+     */
+    public function isContentValid(ExecutionContextInterface $context)
+    {
+        $forBiddenWords = ['démotivation', 'abandon'];// mot à bannir
+
+        //vérifie que le contenu ne contient pas un de ces mots
+        if(preg_match('#' . implode('|', $forBiddenWords) . '#', $this->getContent()))
+        {
+            //la règle est violée, on définit l'erreur
+            $context
+                ->buildViolation('Contenu invalide car il contient un mot interdit.')//message
+                ->atPath('content')//c'est l'attribut de l'objet qui est violé
+                ->addViolation()//déclenche l'erreur
+            ;
+        } 
+    }
+
+
 
     public function getId(): ?int
     {

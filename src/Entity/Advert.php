@@ -6,6 +6,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+use App\Validator\Antiflood;//sur $author
+
 // composer require symfony/validator
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -50,6 +52,10 @@ class Advert
     /**
      * @var string - $author
      * @ORM\Column(type="string", length=255)
+     * 
+     * //son argument value correspond à la valeur de l'attribut sur laquelle on a défini 
+     * l'annotation ici $author
+     * @Antiflood()
      * 
      * //Le nom de l'auteur doit faire au moins 2 caractère de long
      * @Assert\Length(min=2, max=255, minMessage="Le champ auteur a besoin de minimum 2 caractères")

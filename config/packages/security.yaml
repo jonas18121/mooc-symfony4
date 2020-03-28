@@ -1,14 +1,16 @@
 security:
+
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
         users_in_memory: { memory: null }
     firewalls:
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
-        main:
-            anonymous: lazy
-            provider: users_in_memory
+        dev:                                                # nom du pare-feu
+            pattern: ^/(_(profiler|wdt)|css|images|js)/     # l'URL de la tool bar et tous les url /css/.., /js/.. et /images/.. seront actif et protéger par le par feu dev
+            security: false                                 # la securité est désactiver
+        main:                               # nom du pare-feu
+            anonymous: lazy                 # accepte les utilisateur annonymes
+            provider: users_in_memory       # va chercher le provider users_in_memory 
+            pattern: ^/                     # Toutes les URL commencent par '/'
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
@@ -21,3 +23,49 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+
+
+
+
+# ///////////////////// E X P L I CA T I O N ////////////////////////
+
+    # un encodeur est un objet qui encode le mot de passe des utilisateurs
+    #encoders:
+
+
+
+    # Le Role est au centre du processus d'autorisation, si un utilisateur tente
+    # d'acceder a une page, le controlleur d'accès vérifie s'il dispose du ou des role
+    # requis pour la page. Si c'est le cas l'accès est autoriser, sinon l'accès est refusé
+    #
+    # Le rôle ROLE_USER est compris dans le role ROLE_ADMIN, ça veut dire que 
+    # si une page require le ROLE_USER, et qu'un utilisateur disposant du ROLE_ADMIN
+    # tente d'y accéder, il sera autorisé, car en disposant du ROLE_ADMIN , il dispose aussi du ROLE_USER
+    #
+    #role_hierarchy:
+    #    ROLE_ADMIN: ROLE_USER
+    #    ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+
+
+
+    # Un provider est un fournisseur d'utilisateurs, les firewalls (pare-feu)
+    #s'adressent aux providers pour récupérer les utilisateurs et les identifier
+    #
+    #providers:
+
+
+
+    # Un firewall (pare-feu) cherche à vérifier que vous êtes bien celui que vous 
+    # prétendez être. ici , seul le pare-feu dev est défini
+    #
+    #firewalls:
+    #    dev:
+    #        pattern: ^/(_(profiler|wdt)|css|images|js)/
+    #        security: false
+
+
+
+    # le contrôle d'accès, va s'occuper de déterminer si le visiteur a les bons droits (rôles)
+    # pour accéder à la ressource demandée
+    #
+    #access_control:

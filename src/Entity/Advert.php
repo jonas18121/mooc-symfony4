@@ -17,11 +17,13 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 /* permet de valider que la valeur d'un attribut est unique */
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+
 use Gedmo\Mapping\Annotation as Gedmo;
 
 use App\Entity\Category;
 
 /**
+ * 
  * @ORM\Entity(repositoryClass="App\Repository\AdvertRepository")
  * 
  * // on dit à Doctrine que notre entité contient des callbacks de cycle de vie

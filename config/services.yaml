@@ -35,8 +35,8 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
-    OC_platforme.antispam:               #nom du service qu'on va utiliser pour l'appeller         
-        class: App\AntiSpam\OCAntiSpame      #defini le namespace complet de la classe du service
+    OC_platforme.antispam:                      #nom du service qu'on va utiliser pour l'appeller         
+        class: App\AntiSpam\OCAntiSpame         #defini le namespace complet de la classe du service
 
     OC_platform.email.application_mailer:
         class: App\Email\ApplicationMailer
@@ -45,3 +45,19 @@ services:
 
     OC_platform.purger.advert:
         class: App\Purger\OCPurger
+
+
+    OC_platform.validator.antiflood:                # nom du service
+        class: App\Validator\AntifloodValidator     # defini le namespace complet de la classe du service
+
+        # les services donnée qu'on injecte au service  la requete et entityManager
+        arguments: 
+            - ["@request_stack", "@doctrine.orm.entity_manager"]
+
+        # c'est avec l'alias qu'on retrouvera le service
+        tags:
+            - {
+                name: validator.constraint_validator,
+                alias: OC_platform_validator_antiflood
+            }
+

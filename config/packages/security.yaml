@@ -1,16 +1,35 @@
 security:
 
+    encoders:
+        App\Entity\User:
+            algorithm: auto
+
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
-        users_in_memory: { memory: null }
+        # used to reload user from session & other features (e.g. switch_user)
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
     firewalls:
         dev:                                                # nom du pare-feu
             pattern: ^/(_(profiler|wdt)|css|images|js)/     # l'URL de la tool bar et tous les url /css/.., /js/.. et /images/.. seront actif et protéger par le par feu dev
             security: false                                 # la securité est désactiver
-        main:                               # nom du pare-feu
-            anonymous: lazy                 # accepte les utilisateur annonymes
-            provider: users_in_memory       # va chercher le provider users_in_memory 
+        main:                               # nom du pare-feu, on peut mettre n'importe quel nom
+            anonymous: lazy                 # accepte les utilisateurs annonymes
+            provider: users_in_memory       # va chercher le provider users_in_memory pour fournir les utilisateurs au pare-feu
             pattern: ^/                     # Toutes les URL commencent par '/'
+            form_login:                     # Authentification via un formulaire HTML
+                login_path: login           # Route du fourmulaire de connexion, la route est ecrit un valeur donc c'est /login
+                check_path: login_check     # Route de validation du formulaire
+            logout:                         # Rendre possible la déconnexion
+                path: logout                # Nom de la route de déconnexion
+                target: login               # Nom de la route vers laquelle sera redirigé le visiteur après sa déconnexion 
+
+            # Normalement sous symfony 3,on écrit les routes du login et logout dans config/routing.yaml 
+            # et génére le userBundle via php bin/console generate:bundle mais on ne fait plus ça sur symfony 4
+            # on fait composer require symfony/security-bundle et  php bin/console make:user et  php bin/console make:auth maintenant
+
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication

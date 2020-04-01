@@ -11,6 +11,12 @@ security:
             entity:
                 class: App\Entity\User
                 property: email
+
+    role_hierarchy:
+        # Un admin hérite des droits d'auteur et de modérateur
+        ROLE_ADMIN: [ROLE_AUTEUR, ROLE_MODERATEUR]
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+
     firewalls:
         dev:                                                # nom du pare-feu
             pattern: ^/(_(profiler|wdt)|css|images|js)/     # l'URL de la tool bar et tous les url /css/.., /js/.. et /images/.. seront actif et protéger par le par feu dev
@@ -23,8 +29,10 @@ security:
                 login_path: login           # Route du fourmulaire de connexion, la route est ecrit un valeur donc c'est /login
             #    check_path: login_check     # Route de validation du formulaire
             logout:                         # Rendre possible la déconnexion
-                path: logout                # Nom de la route de déconnexion
-                target: login               # Nom de la route vers laquelle sera redirigé le visiteur après sa déconnexion 
+                path: app_logout            # Nom de la route de déconnexion qui est dans le SecurityController
+                target: app_login           # Nom de la route (qui est dans le SecurityController) vers laquelle sera redirigé le visiteur après sa déconnexion 
+            
+            # tous le guard et logout sont arriver grace a bin/console make:auth
             guard:
                 authenticators:
                     - App\Security\LoginFormAuthenticator

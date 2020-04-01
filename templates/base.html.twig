@@ -19,12 +19,13 @@
                 <p><a class="btn btn-primary btn-lg" href="">Participer au MOOC</a></p>
 
                 {#{{ dump(app.user) }}#}
-
+                {#
                 {% if app.user %}
                     <p><a class="btn btn-primary btn-lg" href="{{ path('app_logout') }}">Déconnexion</a></p>
                 {% else %}
                     <p><a class="btn btn-primary btn-lg" href="{{ path('app_login') }}">Connexion</a></p>
                 {% endif %}
+                #}
             </div>
         
 

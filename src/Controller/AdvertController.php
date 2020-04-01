@@ -43,6 +43,10 @@ use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 
+// limiter l'accès de certains utilisateurs grace aux Rôles
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
 
 class AdvertController extends AbstractController
 {
@@ -181,6 +185,8 @@ class AdvertController extends AbstractController
     }
 
     /**
+     * @Security("is_granted('ROLE_AUTEUR')")
+     * 
      * @Route("/advert/add", name="OC_advert_add")
      */
     public function add(Request $request, EntityManagerInterface $manager, SkillRepository $repoSkill, ValidatorInterface $validator, OCAntiSpame $antiSpam)

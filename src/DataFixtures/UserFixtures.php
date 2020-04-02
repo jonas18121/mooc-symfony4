@@ -30,10 +30,10 @@ class UserFixtures extends Fixture
 
         $user->setPassword($this->passwordEncoder->encodePassword(
             $user,
-            'mon_mot_de_passe'
+            'admin'
         ))
-            ->setEmail('user@gmail.com')
-            ->setRoles(['ROLE_USER'])
+            ->setEmail('admin@gmail.com')
+            ->setRoles(['ROLE_ADMIN'])
         ;
 
         $manager->persist($user);

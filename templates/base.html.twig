@@ -19,13 +19,13 @@
                 <p><a class="btn btn-primary btn-lg" href="">Participer au MOOC</a></p>
 
                 {#{{ dump(app.user) }}#}
-                {#
+                
                 {% if app.user %}
                     <p><a class="btn btn-primary btn-lg" href="{{ path('app_logout') }}">Déconnexion</a></p>
                 {% else %}
                     <p><a class="btn btn-primary btn-lg" href="{{ path('app_login') }}">Connexion</a></p>
                 {% endif %}
-                #}
+                
             </div>
         
 
@@ -35,7 +35,12 @@
 
                     <ul class="nav nav-pills nav-stacked">
                         <li><a href="{{ path('OC_advert_index') }}">Accueil</a></li>
-                        <li><a href="{{ path('OC_advert_add') }}">Ajouter une annonce</a></li>
+                        
+                        {# on n'affiche le lien "Ajouter une annonce" seulment aux auteurs #}
+                        {# si l'utilisateur qui est sur cette page possède le ROLE_AUTEUR ou ROLE_ADMIN , il pourra crée des annonces #}
+                        {% if is_granted('ROLE_AUTEUR') %}
+                            <li><a href="{{ path('OC_advert_add') }}">Ajouter une annonce</a></li>
+                        {% endif %}
                     </ul> 
 
                     <h4> Dernières annonces </h4>
@@ -52,7 +57,7 @@
             <hr>
 
             <footer>
-                <p>The sky @ {{ 'now'|date('Y') }} yes</p>
+                <p>Voir grand @ {{ 'now'|date('Y') }} ans</p>
             </footer>
         </div>
 

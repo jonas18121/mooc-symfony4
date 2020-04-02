@@ -33,6 +33,11 @@ class User implements UserInterface
      */
     private $password;
 
+    /**
+     * 
+     */
+    private $confirm_password;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -109,5 +114,17 @@ class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getConfirmPassword(): ?string
+    {
+        return $this->confirm_password;
+    }
+
+    public function setConfirmPassword(?string $confirm_password): self
+    {
+        $this->confirm_password = $confirm_password;
+
+        return $this;
     }
 }

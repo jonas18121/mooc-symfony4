@@ -51,7 +51,7 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
+         - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 
 
@@ -98,4 +98,10 @@ security:
     # le contrôle d'accès, va s'occuper de déterminer si le visiteur a les bons droits (rôles)
     # pour accéder à la ressource demandée
     #
+    # toutes les URL qui correspondent au path(ici, toutes celles qui commencent par/admin) requièrent le rôle ROLE_ADMIN.
+    # C'est une méthode complémentaire des autres. Elle permet également de sécuriser vos URL par IP ou par canal (http ou https),
+    # grâce à des options :
+    #
+    #
     #access_control:
+    #   - { path: ^/admin, ip: 127.0.0.1, requires_channel: https }

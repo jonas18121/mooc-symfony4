@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription{% endblock title %}
+
+{% block body %}
+    <h3>Inscription</h3>
+
+    <div class="well">
+        {{
+            form_start(formRegistration, {
+                'attr' : {
+                    'class' : 'form-horizontal'
+                }
+            })
+        }}
+
+        {# Les erreurs générales du formulaire. #}
+        {{ form_errors(formRegistration) }}
+
+        {# Génération manuelle et éclatée #}
+        <div class="form-group">
+
+        </div>
+
+
+
+        {# generation automatique des champs pas encore écrit
+        et tous les champs caché de type hidden comme la CRSF #}
+        {{ form_rest(formRegistration) }}
+
+        <button> S'inscrire </button>
+        {# fermeture de la balise form #}
+        {{ form_end(formRegistration) }}
+    </div>
+
+{% endblock body %}

@@ -7,10 +7,10 @@ security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
         # used to reload user from session & other features (e.g. switch_user)
-        app_user_provider:
-            entity:
-                class: App\Entity\User
-                property: email
+        app_user_provider:                                  # le nom du provider
+            entity:                                         # le type de provider
+                class: App\Entity\User                      # la classe User est le fournisseur d'utilisateur
+                property: email                             # l'attribut qui sert d'identifiant
 
     role_hierarchy:
         # Un admin hérite des droits d'auteur et de modérateur
@@ -23,7 +23,7 @@ security:
             security: false                                 # la securité est désactiver
         main:                               # nom du pare-feu, on peut mettre n'importe quel nom
             anonymous: lazy                 # accepte les utilisateurs annonymes
-            provider: app_user_provider     # va chercher le provider app_user_provider pour fournir les utilisateurs au pare-feu users_in_memory
+            provider: app_user_provider     # va chercher le provider app_user_provider pour fournir les utilisateurs au pare-feu main            //users_in_memory
             pattern: ^/                     # Toutes les URL commencent par '/'
             form_login:                     # Authentification via un formulaire HTML
                 login_path: login           # Route du fourmulaire de connexion, la route est ecrit un valeur donc c'est /login

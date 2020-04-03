@@ -31,7 +31,15 @@ security:
             logout:                         # Rendre possible la déconnexion
                 path: app_logout            # Nom de la route de déconnexion qui est dans le SecurityController
                 target: app_login           # Nom de la route (qui est dans le SecurityController) vers laquelle sera redirigé le visiteur après sa déconnexion 
-            
+        
+        #admin:
+        #    pattern: ^/admin
+        #    form_login:
+        #        login_path: admin/login
+        #    logout:
+        #        path: admin_logout
+        #        target: admin_login    
+
             # tous le guard et logout sont arriver grace a bin/console make:auth
             guard:
                 authenticators:
@@ -51,6 +59,8 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+         - { path: ^/admin/inscription, roles:  }
+         - { path: ^/admin/login, roles:  }
          - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 

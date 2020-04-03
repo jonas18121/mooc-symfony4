@@ -21,6 +21,7 @@
                 {#{{ dump(app.user) }}#}
                 
                 {% if app.user %}
+                    <p>Connecté avec : {{ app.user.email }}</p>
                     <p><a class="btn btn-primary btn-lg" href="{{ path('app_logout') }}">Déconnexion</a></p>
                 {% else %}
                     <p><a class="btn btn-primary btn-lg" href="{{ path('app_login') }}">Connexion</a></p>

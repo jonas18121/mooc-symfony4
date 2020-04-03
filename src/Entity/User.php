@@ -5,6 +5,9 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+//permet de soumettre des données à des contraites
+use Symfony\Component\Validator\Constraints as Assert;
+
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
@@ -34,7 +37,7 @@ class User implements UserInterface
     private $password;
 
     /**
-     * 
+     * @Assert\EqualTo(propertyPath="password", message="Les 2 mots de passe sont différements")
      */
     private $confirm_password;
 

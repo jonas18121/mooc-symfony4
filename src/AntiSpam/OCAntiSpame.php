@@ -20,7 +20,7 @@ class OCAntiSpame
         /*$text = (strlen($text) < 50) ? true : false;
         return $text;*/
         if(is_string($text)){
-            return (strlen($text) < 10) ? 'Alerte aux Spam' : $text;
+            return (strlen($text) < 10) ? 'Ce texte est considéré comme spam' : $text;
         }
 
         return (strlen($text->getContent()) < 10) ? true : false;

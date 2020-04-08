@@ -161,9 +161,9 @@ class AdvertController extends AbstractController
         //on récupère l'id de l'annonce
         $advert = $repo->find($id);
 
-        if($antiSpam->isSpam($advert)){
-            throw new \Exception('Votre messages a été détècté comme spam');
-        }
+        //if($antiSpam->isSpam($advert)){
+        //    throw new \Exception('Votre messages a été détècté comme spam');
+        //}
 
 
         //on recupère la liste des candidature lier à cette annonce

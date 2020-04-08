@@ -17,6 +17,8 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 /* permet de valider que la valeur d'un attribut est unique */
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+use Symfony\Component\Security\Core\User\UserInterface;
+
 
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -131,6 +133,12 @@ class Advert
     private $slug;
 
 
+    /**
+     * @var UserInterface 
+    */
+    private $user;
+
+
     // les listes d'objet sont des ArrayCollection()
     public function __construct()
     {
@@ -138,6 +146,7 @@ class Advert
         $this->categories   = new ArrayCollection();
         $this->advertSkills = new ArrayCollection();
         $this->date         = new \DateTime();
+        $this->user         = new UserInterface();
     }
 
     /**
@@ -402,4 +411,14 @@ class Advert
         $this->nbApplications--;
     }
 
+
+    /**
+     * Get the value of user
+     *
+     * @return  UserInterface
+     */ 
+    public function getUser()
+    {
+        return $this->user;
+    }
 }

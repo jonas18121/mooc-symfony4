@@ -63,6 +63,28 @@ services:
 
     
 
-    #service déclencheur de l'évènement pour écrire le mot "beta sur le site"
+    #service déclencheur de l'évènement "kernel.response" pour écrire le mot "beta sur le site"
     OC_platform.beta.html_adder:
         class: App\EventDeclenche\BetaHTMLAdder
+
+
+
+    #service écouteur de l'évènement "kernel.response" pour écrire le mot "beta sur le site" 
+        #tags:
+        #    - {
+        #        name: kernel.event_listener,        # Accéder au gestionnaire d'évènement en tant que listener
+        #        event: kernel.response,             # Nom de l'évènement que le listener veut écouter
+        #        method: processBeta,                # Nom de la méthode du listener va exécuter lorsque l'évènement est déclenché
+        #    }
+    OC_platform.beta.listener:
+        class: App\EventListener\BetaListener
+        # les arguments que va prendre le constructeur de BetaListener
+        arguments:
+            - "@OC_platform.beta.html_adder"    
+            - "2020-05-12"
+        tags:
+            - {
+                name: kernel.event_listener,        
+                event: kernel.response,             
+                method: processBeta          
+            }

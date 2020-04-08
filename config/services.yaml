@@ -63,3 +63,6 @@ services:
 
     
 
+    #service déclencheur de l'évènement pour écrire le mot "beta sur le site"
+    OC_platform.beta.html_adder:
+        class: App\EventDeclenche\BetaHTMLAdder

@@ -47,6 +47,9 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
+// accès a l'évènement MessagePostEvent
+use App\Event\MessagePostEvent;
+
 
 class AdvertController extends AbstractController
 {
@@ -254,6 +257,15 @@ class AdvertController extends AbstractController
                 */
                 //On vérifie que les valeurs entrées sont correctes
                 if($form->isValid()){
+
+                    // On crée l'évènement avec ses 2 arguments
+                    $event = new MessagePostEvent($advert->getContent(), $advert->getUser());
+
+                    //On déclenche l'évènement
+                    $this->get('event_dispatcher')->dispatch(MessagePostEvent::POST_MESSAGE, $event);
+
+                    // on récupère ce qui à été modifié par le ou les listener, ici le message
+                    $advert->setContent($event->getMessage());
 
                     $manager->persist($advert);
                     $manager->flush();

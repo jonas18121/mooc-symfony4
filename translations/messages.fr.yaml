@@ -1,0 +1,24 @@
+Symfony :
+    is :
+        great : J'aime Symfony
+
+hello :
+    cle : Bonjour
+
+
+paragraphe :
+
+    # Le chevron " > " en début de chaîne indique que la chaine de caractère
+    # sur plusieurs lignes, mais les retour à la ligne ne seron pas présents
+    # dans le code HTML, car il seront remplacés par des espaces.
+    # L'indentation doit être faite sur tout le paragraphe
+    premier_paragraphe : >
+        C'est le premier paragraphe de la page traduction
+        c'est super !
+
+    # La pipe " | " permet la même chose, mais les retours à la ligne seront
+    # présent dans le code HTML, et non remplacés par des espaces.
+    # on peut utiliser nl2br(), sur une chaine.
+    deuxieme_paragraphe : |
+        C'est le deuxième paragraphe de la page traduction
+        C'est génial !

@@ -187,6 +187,11 @@
         <a href="#" id="add_category" class="btn btn-default" >Ajouter une catégorie</a>
     </div>
 
+    {% if app.user %}
+        {{ dump(app.user.id) }}
+        <input type="hidden" value="{{ app.user.id }}" name="user"  >
+    {% endif %}
+
     {{ 
         form_widget(form.save, {
             'attr' : {
@@ -195,7 +200,7 @@
         }) 
     }}
 
-
+    
     {# generation automatique des champs pas encore écrit
     et tous les champs caché de type hidden comme la CRSF #}
     {{ form_rest(form) }}

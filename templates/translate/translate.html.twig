@@ -1,0 +1,8 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ parent() }} - Traduction {% endblock title %}
+
+{% block body %}
+    <h1>{{ 'hello.cle'|trans }} {{ name }}</h1>
+
+    <p> {{ translated }} </p>
+{% endblock body %}

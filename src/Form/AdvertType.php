@@ -69,6 +69,7 @@ class AdvertType extends AbstractType
                 }
             ])*/
             /**/
+            //->add('user', TextType::class)
 
 
             ->add('save',       SubmitType::class)

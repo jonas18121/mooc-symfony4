@@ -4,8 +4,9 @@
 
 namespace App\Event;
 
+use App\Entity\User;
 use Symfony\Contracts\EventDispatcher\Event;
-use Symfony\Component\Security\Core\User\UserInterface;
+//use Symfony\Component\Security\Core\User\UserInterface;
 
 class MessagePostEvent extends Event
 {
@@ -15,7 +16,7 @@ class MessagePostEvent extends Event
     protected $message;
     protected $user;
 
-    public function __construct($message, UserInterface $user)
+    public function __construct($message, User $user = null)
     {
         $this->message  = $message;
         $this->user     = $user;

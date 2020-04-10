@@ -22,6 +22,8 @@ use App\Repository\ApplicationRepository;
 use App\Entity\Category;
 use App\Repository\CategoryRepository;
 
+use App\Entity\User;
+
 use App\Entity\AdvertSkill;
 use App\Repository\AdvertSkillRepository;
 use App\Repository\SkillRepository;
@@ -50,9 +52,53 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 // accès a l'évènement MessagePostEvent
 use App\Event\MessagePostEvent;
 
+// traduire le site
+use Symfony\Contracts\Translation\TranslatorInterface;
 
+/**
+ * @Route("/{_locale}", requirements={
+ *      "_locale" = "en|fr"
+ *  },
+ *  defaults= {
+ *      "_locale" = "fr"
+ *  })
+ */
 class AdvertController extends AbstractController
 {
+
+    /**
+     * s'occupe de la traduction du site
+     * 
+     * {_locale} permet de traduire selon la langue qu'on a choisit
+     * exemple : 
+     *      fr :
+     *          /fr/tradution/{name}, ou
+     *      en :
+     *          /en/tradution/{name}, ou 
+     *      de :
+     *          /de/tradution/{name}, ou 
+     *      etc...
+     * il faut créer le fichier yaml pour chaque langues
+     * exemple:
+     *      translations/messages.fr.yaml,
+     *      translations/messages.en.yaml,
+     *      translations/messages.de.yaml
+     * 
+     * //@/ Route("/{_locale}/traduction/{name}")
+     * 
+     * @Route("/traduction/{name}", name="traduction")
+     */
+    public function translation(TranslatorInterface $translator, $name)
+    {
+        $translated = $translator->trans('Symfony.is.great');
+
+        return $this->render('translate/translate.html.twig',[
+            'translated' => $translated,
+            'name' => $name
+        ]);
+    }
+
+
     /** purger les annonces de plus de X jours
      * @Route("/advert/purge/{days}", name="OC_advert_purge", requirements={
      *      "days" = "[0-9]{1,}"
@@ -205,7 +251,6 @@ class AdvertController extends AbstractController
 
         // pour pré-remplire un formulaire
         $advert->setDate(new \DateTime());
-
         
 
         //On crée le formulaire
@@ -257,15 +302,6 @@ class AdvertController extends AbstractController
                 */
                 //On vérifie que les valeurs entrées sont correctes
                 if($form->isValid()){
-
-                    // On crée l'évènement avec ses 2 arguments
-                    $event = new MessagePostEvent($advert->getContent(), $advert->getUser());
-
-                    //On déclenche l'évènement
-                    $this->get('event_dispatcher')->dispatch(MessagePostEvent::POST_MESSAGE, $event);
-
-                    // on récupère ce qui à été modifié par le ou les listener, ici le message
-                    $advert->setContent($event->getMessage());
 
                     $manager->persist($advert);
                     $manager->flush();

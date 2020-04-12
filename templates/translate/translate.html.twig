@@ -1,8 +1,17 @@
 {% extends 'base.html.twig' %}
-{% block title %}{{ parent() }} - Traduction {% endblock title %}
+{% block title %}{{ parent() }} - {{ 'traduction'|trans }} {% endblock title %}
 
 {% block body %}
-    <h1>{{ 'hello.cle'|trans }} {{ name }}</h1>
+    <h1>{{ 'hello.cle' |trans({'%name%' : name}) }}</h1>
 
     <p> {{ translated }} </p>
+    <p> 
+        {{ 'paragraphe.premier_paragraphe'|trans|nl2br }}
+        <br><br>
+        {{ 'paragraphe.deuxieme_paragraphe'|trans|nl2br }}
+    </p>
+
+    {% for i in 0..2 %}
+        <p>{{ ('paragraphe.liste_paragraphe.' ~ i)|trans }}</p>
+    {% endfor %}
 {% endblock body %}

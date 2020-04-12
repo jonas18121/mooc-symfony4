@@ -1,6 +1,44 @@
 Symfony :
-  is :
-    great : Symfony is great
+    is :
+        great : Symfony is great
+
+traduction : Translate
 
 hello :
-  cle : Welcome
+    cle : Welcome %name%!
+
+
+paragraphe :
+    premier_paragraphe : >
+        This is the first paragraph on the translation page.
+        And it's great !
+        However, we cannot return the line with this character " > "
+
+    deuxieme_paragraphe : |
+        This is the second paragraph on the translation page.
+        We can do line breaks with this character " | " , with the nl2br filter.
+        And it's great !
+
+    liste_paragraphe :
+        - >
+            Another possibility of the YAML language which can the prove to be 
+            pratical in the case of catalogs !
+
+        - |
+            Let's take the previous example of the charter to make a list. 
+            Indeed, We often come acroos a series of paragraphs, some of which
+            will be deleted, others added, and we must be able to do this fairly quickly.
+            If you are nit using a list, and you delete part 2 of 3, or add a new paragraph
+            between two other ... you must either adapt your view or renumber the parts 
+            and paragraphs. In short, it is clearly not ideal.
+
+        - >
+            Fortunately, there is a way to avoid this in YAML, and here's how.
+
+        - |
+            the notation 0..2 is a twig syntax for generating a linear sequence. 
+            The number before the colon (..) is the beginning, the number after is the end
+
+            So when you insert it in the rigth place in the catalog, without worrying
+            about its number. you only have to increment the end of the sequence in lefor.
+            Similary if you delete a paragraph, you onlyhave to decrement the limit of the sequence.

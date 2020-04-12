@@ -2,8 +2,11 @@ Symfony :
     is :
         great : J'aime Symfony
 
+traduction : Traduction
+
 hello :
-    cle : Bonjour
+    cle : Bonjour %name% !
+
 
 
 paragraphe :
@@ -13,12 +16,40 @@ paragraphe :
     # dans le code HTML, car il seront remplacés par des espaces.
     # L'indentation doit être faite sur tout le paragraphe
     premier_paragraphe : >
-        C'est le premier paragraphe de la page traduction
-        c'est super !
+        C'est le premier paragraphe de la page traduction.
+        Et c'est super !
+        Par contre on ne peut pas faire de retour à la ligne avec ce caratère " > "
 
     # La pipe " | " permet la même chose, mais les retours à la ligne seront
     # présent dans le code HTML, et non remplacés par des espaces.
     # on peut utiliser nl2br(), sur une chaine.
     deuxieme_paragraphe : |
-        C'est le deuxième paragraphe de la page traduction
-        C'est génial !
+        C'est le deuxième paragraphe de la page traduction.
+        On peut faire des retours à la ligne avec ce caractère " | " avec le filtre nl2br.
+        Et c'est génial !
+
+    # liste de plusieur paragraphe qui pourra être afficher ave une boucle for
+    liste_paragraphe :
+        - >
+            Encore une possibilité du YAML qui peut s'avérer pratique dans le cas de catalogues !
+
+        - |
+            Reprenons l'exemple précédent de la charte pour en faire une liste. 
+            En effet, on rencontre souvent une série de paragraphes, dont certains seront supprimés, 
+            d'autres ajoutés, et il faut pouvoir le faire assez rapidement. 
+            Si vous n'utilisez pas de liste, et que vous supprimez la partie 2 sur 3, 
+            ou que vous ajoutez un nouveau paragraphe entre deux autres… 
+            vous devez soit adapter votre vue, soit renuméroter les parties et paragraphes. 
+            Bref, ce n'est clairement pas idéal.
+
+        - > 
+            Heureusement, il y a un moyen d'éviter cela en YAML, et voici comment :
+
+        - |
+            La notation0..2est une syntaxe Twig pour générer une séquence linéaire. 
+            Le nombre avant les deux points (..) est le début, celui après est la fin.
+
+            Donc quand vous ajoutez un paragraphe, vous l'insérez à la bonne place dans 
+            le catalogue, sans vous préoccuper de son numéro. Vous n'avez qu'à incrémenter la fin de 
+            la séquence dans lefor. De même si vous supprimez un paragraphe, vous n'avez qu'à décrémenter
+            la limite de la séquence.

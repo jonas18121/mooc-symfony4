@@ -24,6 +24,7 @@ use App\Repository\CategoryRepository;
 
 use App\Entity\User;
 
+
 use App\Entity\AdvertSkill;
 use App\Repository\AdvertSkillRepository;
 use App\Repository\SkillRepository;
@@ -54,6 +55,8 @@ use App\Event\MessagePostEvent;
 
 // traduire le site
 use Symfony\Contracts\Translation\TranslatorInterface;
+
+use sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 /**
  * @Route("/{_locale}", requirements={
@@ -202,13 +205,13 @@ class AdvertController extends AbstractController
      *      "id" = "[0-9]{1,}"
      * })
      */
-    public function view($id, Request $request , OCAntiSpame $antiSpam, AdvertSkillRepository $repoAdvertSkill, AdvertRepository $repo, ApplicationRepository $repoApplication)
+    public function view(Advert $advert, Request $request , OCAntiSpame $antiSpam, AdvertSkillRepository $repoAdvertSkill, AdvertRepository $repo, ApplicationRepository $repoApplication)
     {
         $tag = $request->query->get('tag'); //pour une URL /advert/view/{id}?tag=une_valeur
         $ok = $request->query->get('ok'); 
 
         //on récupère l'id de l'annonce
-        $advert = $repo->find($id);
+        //$advert = $repo->find($id);
 
         //if($antiSpam->isSpam($advert)){
         //    throw new \Exception('Votre messages a été détècté comme spam');
@@ -225,7 +228,7 @@ class AdvertController extends AbstractController
         
         //return new Response("Affichage de l'annonce d'id : '{$id}' , avec le tag : {$tag} {$ok} ");
         return $this->render('advert/view.html.twig', [
-            'id'  => $id, 
+            //'id'  => $advert->getId(), 
             'tag' => $tag,
             'advert' => $advert,
             'listApplications' => $listApplications,
@@ -398,16 +401,17 @@ class AdvertController extends AbstractController
      *      "id" = "[0-9]+"
      * })
      */
-    public function edit($id, Request $request, AdvertRepository $repoAdvert, CategoryRepository $repoCategory, EntityManagerInterface $manager)
+    public function edit(Advert $advert, Request $request, AdvertRepository $repoAdvert, CategoryRepository $repoCategory, EntityManagerInterface $manager)
     {
         /* ici récupération de $id */ 
 
         //on récupère l'id de l'annonce
-        $advert = $repoAdvert->find($id);
+        //$advert = $repoAdvert->find($id);
 
+        /*
         if($advert === null){
             throw new \Exception("L'annonce qui à cette id : {$id} n'existe pas.");
-        }
+        }*/ 
 
         //on récupère toutes les category
         $listCategories = $repoCategory->findAll();
@@ -463,18 +467,17 @@ class AdvertController extends AbstractController
      *      "id" = "[0-9]+"
      * })
      */
-    public function delete($id, AdvertRepository $repoArticle, CategoryRepository $repoCategory, EntityManagerInterface $manager, Request $request)
+    public function delete(Advert $advert, AdvertRepository $repoArticle, CategoryRepository $repoCategory, EntityManagerInterface $manager, Request $request)
     {
         //on récupère l'id de l'annonce
-        $advert = $repoArticle->find($id);
+        //$advert = $repoArticle->find($id);
 
+        /*
         if($advert === null){
             throw new \Exception("L'annonce qui à cette id : {$id} n'existe pas.");
-        }
+        }*/
 
-        
-
-
+    
         //on crée un formulaire vide, qui contiendra que le champ CSRF
         //$form = $this->createForm(AdvertEditType::class, $advert);
         $form = $this->get('form.factory')->create();

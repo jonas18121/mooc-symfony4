@@ -11,7 +11,7 @@
         {{ 'paragraphe.deuxieme_paragraphe'|trans|nl2br }}
     </p>
 
-    {% for i in 0..2 %}
+    {% for i in 0..3 %}
         <p>{{ ('paragraphe.liste_paragraphe.' ~ i)|trans }}</p>
     {% endfor %}
 {% endblock body %}

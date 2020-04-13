@@ -56,7 +56,7 @@ use App\Event\MessagePostEvent;
 // traduire le site
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-use sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 /**
  * @Route("/{_locale}", requirements={
@@ -68,6 +68,21 @@ use sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
  */
 class AdvertController extends AbstractController
 {
+
+    /** test du convertisseur que j'ai créer
+     * retourne un tableau PHP , qui a été décodé depuis le JSON initial
+     * exemple /test/{"a":1,"z":2,"e":3}
+     * 
+     * @ParamConverter("json")
+     * 
+     * @Route("/test/{json}")
+     * 
+     */
+    public function ParamConverterAction($json)
+    {
+        return new Response(print_r($json, true));
+    }
+
 
     /**
      * s'occupe de la traduction du site

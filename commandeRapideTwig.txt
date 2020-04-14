@@ -123,3 +123,6 @@ info            All craft.session properties and template tags
 info            All craft.tags properties and template tags
 info            All craft.users properties and template tags
 info            All craft globals (site info, date, users, template tags)
+
+
+C:\wamp64\www\3wa\PHP\mooc-symfony4\vendor\symfony\twig-bundle\Resources\views\Exception\error.html.twig

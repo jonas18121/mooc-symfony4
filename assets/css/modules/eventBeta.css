@@ -1,0 +1,9 @@
+/* notification pour indiquer que le site est en mode Beta */
+.notification_beta{
+    position: absolute;
+    top: 0;
+    background-color: orange;
+    width: 100%;
+    text-align: center;
+    padding: 0.5em;
+}

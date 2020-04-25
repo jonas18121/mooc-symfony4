@@ -57,12 +57,14 @@
                 Retour à la liste
             </a>
             
-            {% if is_granted('ROLE_AUTEUR') %}
+            {% if is_granted( 'edit' , advert ) %} {# appel le AccessVoter pour controler que l'annonce appartient a l'user courrant #}
                 <a href="{{ path('OC_advert_edit', {'id' : advert.id}) }}"  class="btn btn-default">
                     <i class="glyphicon glyphicon-chevron-edit"></i>
                     Modifier l'annonce
                 </a> 
+            {% endif %}    
 
+            {% if is_granted( 'delete' , advert ) %} {# appel le AccessVoter pour controler que l'annonce appartient a l'user courrant #}
                 <a  href="{{ path('OC_advert_delete', {'id' : advert.id}) }}"  class="btn btn-danger">
                     <i class="glyphicon glyphicon-chevron-trash"></i>
                     Supprimer l'annonce

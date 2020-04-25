@@ -44,11 +44,14 @@ class AntispamExtension extends AbstractExtension
         return $this->ocAntispam->isSpam($text);
     }
 
+    /**
+     * sur twig , {{ checkIfSpam(var) }} sera en mode fonction
+     */
     public function getFunctions()
     {
         /*
         checkIfSpam est le nom de la fonction qui sera disponible dans nos vues Twig
-        [$this, 'checkIfArgumentIsSpam'] callable, est comme si on faisait [$this->ocAntispam, 'isSpam']
+        [$this, 'checkIfArgumentIsSpam'] callable, c'est comme si on faisait [$this->ocAntispam, 'isSpam']
         Au final, {{ checkIfSpam(var) }} côté Twig exécute $this->isSpam($var) côté OCAntiSpam 
         */
         return [
@@ -59,5 +62,15 @@ class AntispamExtension extends AbstractExtension
     public function getName()
     {
         return 'OCAntiSpame';
+    }
+
+    /**
+     * sur twig , {{ var | checkIfSpam }} sera en mode filtre
+     */
+    public function getFilters()
+    {
+        return [
+            new TwigFunction('checkIfSpam', [$this, 'checkIfArgumentIsSpam']),
+        ];
     }
 }

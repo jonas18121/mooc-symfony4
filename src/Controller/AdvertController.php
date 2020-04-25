@@ -286,7 +286,7 @@ class AdvertController extends AbstractController
             // récupérer une instance de validateur
             //$validator = Validation::createValidator();
             
-
+            $advert->setUser($this->getUser());
 
             /* handleRequest($request) dit au formulaire :
                 - Voici la requête d'entrée (nos variable sont de type post)
@@ -428,6 +428,9 @@ class AdvertController extends AbstractController
             throw new \Exception("L'annonce qui à cette id : {$id} n'existe pas.");
         }*/ 
 
+        // appel le AccessVoter pour controler que l'annonce appartient a l'user courrant
+        $this->denyAccessUnlessGranted('edit', $advert);
+
         //on récupère toutes les category
         $listCategories = $repoCategory->findAll();
 
@@ -491,6 +494,9 @@ class AdvertController extends AbstractController
         if($advert === null){
             throw new \Exception("L'annonce qui à cette id : {$id} n'existe pas.");
         }*/
+
+        // appel le AccessVoter pour controler que l'annonce appartient a l'user courrant
+        $this->denyAccessUnlessGranted('delete', $advert);
 
     
         //on crée un formulaire vide, qui contiendra que le champ CSRF
